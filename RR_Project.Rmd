@@ -1,0 +1,452 @@
+---
+title: "Reproducible Research Project"
+author: "Robert Kowalczyk, Szymon Socha, Karolina Szczęsna"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This is the final project for the Reproducible Research course.
+
+Team members:
+
+- Robert Kowalczyk
+- Szymon Socha
+- Karolina Szczęsna
+
+```{r}
+
+```
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  #importing libraries
+  import pandas as pd 
+  import numpy as np 
+  import seaborn as sns 
+  import matplotlib.pyplot as plt
+  from sklearn.preprocessing import StandardScaler
+  from sklearn.model_selection import train_test_split,GridSearchCV
+  from sklearn.metrics import accuracy_score,confusion_matrix
+  
+  import warnings
+  warnings.filterwarnings('ignore')
+  ```
+</details>
+
+## Importing dataset
+
+```{r, echo=FALSE}
+```
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df=pd.read_excel('/kaggle/input/flight-fare-prediction-mh/Data_Train.xlsx')
+  df.head()
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df.info()
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df.describe()
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df.shape
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df.isnull().sum()
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  import missingno as msno
+  msno.bar(df)
+  plt.show
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df.dropna(inplace=True)
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df.isnull().sum()
+  ```
+</details>
+
+### Data Cleaning
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df.dtypes 
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  def change_into_datetime(col):
+      df[col]=pd.to_datetime(df[col])
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df.columns
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  for i in ['Date_of_Journey','Dep_Time', 'Arrival_Time']:
+    change_into_datetime(i)
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df.dtypes
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df['journey_day']=df['Date_of_Journey'].dt.day
+  df['journey_month']=df['Date_of_Journey'].dt.month
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df.head(10)
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df.drop('Date_of_Journey', axis=1, inplace=True)
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  def extract_hour(data,col):
+    data[col+'_hour']=data[col].dt.hour
+    
+  def extract_min(data,col):
+      data[col+'_min']=data[col].dt.minute
+      
+  def drop_col(data,col):
+      data.drop(col,axis=1,inplace=True)
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  # Departure time is when a plane leaves the gate. 
+  # Similar to Date_of_Journey we can extract values from Dep_Time
+  extract_hour(df,'Dep_Time')
+  
+  #extracting minutes
+  extract_min(df,'Dep_Time')
+  
+  #drop the column
+  drop_col(df,'Dep_Time')
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  #extracting hour
+  extract_hour(df,'Arrival_Time')
+  
+  #extracting min
+  extract_min(df,'Arrival_Time')
+  
+  #drop the column
+  drop_col(df,'Arrival_Time')
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df.head(10)
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  duration=list(df['Duration'])
+  for i in range(len(duration)):
+      if len(duration[i].split(' '))==2:
+          pass
+      else:
+          if 'h' in duration[i]: # Check if duration contains only hour
+               duration[i]=duration[i] + ' 0m' # Adds 0 minute
+          else:
+               duration[i]='0h '+ duration[i]
+  ```
+</details><details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df['Duration']=duration
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df.head()
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  def hour(x):
+      return x.split(' ')[0][0:-1]
+  
+  def minutes(x):
+      return x.split(' ')[1][0:-1]
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df['dur_hour']=df['Duration'].apply(hour)
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df['dur_min']=df['Duration'].apply(minutes)
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df.head(10)
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  drop_col(df,'Duration')
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df.dtypes
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df['dur_hour'] = df['dur_hour'].astype(int)
+  df['dur_min'] = df['dur_min'].astype(int)
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  df.dtypes
+  ```
+</details>
+
+#### Finding the categorical value
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  column=[column for column in df.columns if df[column].dtype=='object']
+  column
+  ```
+</details>
+
+#### Finding the continuous value
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  continuous_col =[column for column in df.columns if df[column].dtype!='object']
+  continuous_col
+  ```
+</details>
+
+## Handling categorical data
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  categorical = df[column]
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  categorical.head()
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  categorical['Airline'].value_counts()
+  ```
+</details>
+
+### Airline vs Price Analysis
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  plt.figure(figsize=(15,8))
+  sns.boxplot(x='Airline',y='Price',data=df.sort_values('Price',ascending=False))
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  plt.figure(figsize=(15,8))
+  sns.boxplot(x='Total_Stops',y='Price',data=df.sort_values('Price',ascending=False))
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  # As Airline is Nominal Categorical data we will perform OneHotEncoding
+  Airline=pd.get_dummies(categorical['Airline'],drop_first=True)
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  Airline.head()
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  categorical['Source'].value_counts()
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  #Source vs Price
+  plt.figure(figsize=(15,15))
+  sns.catplot(x='Source',y='Price',data=df.sort_values('Price',ascending=False),kind='boxen')
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  #encoding of source column
+  source=pd.get_dummies(categorical['Source'],drop_first=True)
+  source.head()
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  categorical['Destination'].value_counts()
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  plt.figure(figsize=(15,8))
+  sns.boxplot(x='Destination',y='Price',data=df.sort_values('Price',ascending=False))
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  #encoding of destination column
+  destination=pd.get_dummies(categorical['Destination'],drop_first=True)
+  destination.head()
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  # now work on route column
+  categorical['Route'].value_counts()
+  ```
+</details>
+
+<details>
+  <summary>Click to show Python code</summary>
+  ```python
+  categorical['Route1']=categorical['Route'].str.split('→').str[0]
+  categorical['Route2']=categorical['Route'].str.split('→').str[1]
+  categorical['Route3']=categorical['Route'].str.split('→').str[2]
+  categorical['Route4']=categorical['Route'].str.split('→').str[3]
+  categorical['Route5']=categorical['Route'].str.split('→').str[4]
+  ```
+</details>
+
+## Feature Selection
+
+## Models
+
+## Hypertunning the model
