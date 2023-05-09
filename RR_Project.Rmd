@@ -2,8 +2,27 @@
 title: "Reproducible Research Project"
 author: "Robert Kowalczyk, Szymon Socha, Karolina Szczęsna"
 date: "`r Sys.Date()`"
-output: html_document
+output: 
+  prettydoc::html_pretty:
+    toc: true
+    theme: cayman
+    highlight: github
 ---
+
+<style>
+details {
+  overflow: hidden;
+  transition: max-height 0.5s ease-out;
+  max-height: 30px;
+}
+details[open] {
+  max-height: 500px;
+}
+details summary {
+  cursor: pointer;
+  font-weight: bold;
+}
+</style>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
