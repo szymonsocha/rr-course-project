@@ -37,7 +37,12 @@ Team members:
 - Karolina Szczęsna
 
 ```{r}
-
+library(tidyverse)
+library(readxl)
+library(dplyr)
+library(ggplot2)
+#library(caret)
+#library(gridExtra)
 ```
 
 <details>
@@ -59,7 +64,9 @@ Team members:
 
 ## Importing dataset
 
-```{r, echo=FALSE}
+```{r}
+df <- read_excel('data/Data_Train.xlsx')
+head(df)
 ```
 
 <details>
@@ -70,12 +77,20 @@ Team members:
   ```
 </details>
 
+```{r}
+str(df)
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
   df.info()
   ```
 </details>
+
+```{r}
+summary(df)
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -84,6 +99,10 @@ Team members:
   ```
 </details>
 
+```{r}
+dim(df)
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
@@ -91,12 +110,26 @@ Team members:
   ```
 </details>
 
+```{r}
+df %>% 
+  summarise_all(~sum(is.na(.)))
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
   df.isnull().sum()
   ```
 </details>
+
+```{r}
+df %>% 
+  summarise_all(~ sum(is.na(.))) %>% 
+  pivot_longer(everything(), names_to = "colname", values_to = "n_of_nas") %>%
+  ggplot(., aes(x = colname, y=n_of_nas)) +
+  geom_bar(stat = 'identity', fill = 'steelblue') +
+  labs(x = 'Column', y = 'No. of NAs')
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -107,12 +140,20 @@ Team members:
   ```
 </details>
 
+```{r}
+df <- df %>% drop_na()
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
   df.dropna(inplace=True)
   ```
 </details>
+
+```{r}
+df %>% summarise_all(~sum(is.na(.)))
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -123,6 +164,10 @@ Team members:
 
 ### Data Cleaning
 
+```{r}
+glimpse(df)
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
@@ -130,13 +175,9 @@ Team members:
   ```
 </details>
 
-<details>
-  <summary>Click to show Python code</summary>
-  ```python
-  def change_into_datetime(col):
-      df[col]=pd.to_datetime(df[col])
-  ```
-</details>
+```{r}
+names(df)
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -145,13 +186,26 @@ Team members:
   ```
 </details>
 
+```{r}
+df$Date_of_Journey <- as.POSIXct(df$Date_of_Journey, format = "%d/%m/%Y")
+df$Dep_Time <- as.POSIXct(df$Dep_Time, format = "%H:%M")
+df$Arrival_Time <- as.POSIXct(df$Arrival_Time, format = "%H:%M")
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
+  def change_into_datetime(col):
+      df[col]=pd.to_datetime(df[col])
+      
   for i in ['Date_of_Journey','Dep_Time', 'Arrival_Time']:
     change_into_datetime(i)
   ```
 </details>
+
+```{r}
+glimpse(df)
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -159,6 +213,11 @@ Team members:
   df.dtypes
   ```
 </details>
+
+```{r}
+df$journey_day <- as.numeric(format(df$Date_of_Journey, "%d"))
+df$journey_month <- as.numeric(format(df$Date_of_Journey, "%m"))
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -168,6 +227,10 @@ Team members:
   ```
 </details>
 
+```{r}
+head(df, 10)
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
@@ -175,12 +238,33 @@ Team members:
   ```
 </details>
 
+```{r}
+df <- df %>% select(-Date_of_Journey)
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
   df.drop('Date_of_Journey', axis=1, inplace=True)
   ```
 </details>
+
+```{r}
+extract_hour <- function(data, col){
+  data[[paste0(col, '_hour')]] <- hour(data[[col]])
+  return(data)
+}
+
+extract_min <- function(data, col){
+  data[[paste0(col, '_min')]] <- minute(data[[col]])
+  return(data)
+}
+
+drop_col <- function(data, col){
+  data[[col]] <- NULL
+  return(data)
+}
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -195,6 +279,12 @@ Team members:
       data.drop(col,axis=1,inplace=True)
   ```
 </details>
+
+```{r}
+df <- extract_hour(df, 'Dep_Time')
+df <- extract_min(df, 'Dep_Time')
+df <- drop_col(df, 'Dep_Time')
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -211,6 +301,12 @@ Team members:
   ```
 </details>
 
+```{r}
+df <- extract_hour(df, 'Arrival_Time')
+df <- extract_min(df, 'Arrival_Time')
+df <- drop_col(df, 'Arrival_Time')
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
@@ -225,12 +321,24 @@ Team members:
   ```
 </details>
 
+```{r}
+head(df, 10)
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
   df.head(10)
   ```
 </details>
+
+```{r}
+df %>% 
+  mutate(Duration = case_when(grepl("^[0-9]+h [0-9]+m$", Duration) ~ Duration,
+                              grepl("^[0-9]+h", Duration) ~ paste0(Duration, " 0m"),
+                              grepl("[0-9]+m$", Duration) ~ paste0("0h ", Duration),
+                              TRUE ~ NA_character_)) -> df
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -245,12 +353,11 @@ Team members:
           else:
                duration[i]='0h '+ duration[i]
   ```
-</details><details>
-  <summary>Click to show Python code</summary>
-  ```python
-  df['Duration']=duration
-  ```
 </details>
+
+```{r}
+head(df)
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -258,6 +365,16 @@ Team members:
   df.head()
   ```
 </details>
+
+```{r}
+hour <- function(x){
+  ifelse(grepl("h", x), as.numeric(strsplit(x, 'h')[[1]][1]), 0)
+}
+
+minutes <- function(x){
+  ifelse(is.na(x[2]), 0, as.numeric(sub(".*?(\\d+)m.*", "\\1", x[2])))
+}
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -270,12 +387,20 @@ Team members:
   ```
 </details>
 
+```{r}
+df$dur_hour <- sapply(df$Duration, hour)
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
   df['dur_hour']=df['Duration'].apply(hour)
   ```
 </details>
+
+```{r}
+df$dur_min <- sapply(strsplit(df$Duration, ' '), minutes)
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -284,12 +409,20 @@ Team members:
   ```
 </details>
 
+```{r}
+head(df, 10)
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
   df.head(10)
   ```
 </details>
+
+```{r}
+drop_col(df, 'Duration')
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -298,12 +431,21 @@ Team members:
   ```
 </details>
 
+```{r}
+str(df)
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
   df.dtypes
   ```
 </details>
+
+```{r}
+df$dur_hour <- as.integer(df$dur_hour)
+df$dur_min <- as.integer(df$dur_min)
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -313,6 +455,10 @@ Team members:
   ```
 </details>
 
+```{r}
+str(df)
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
@@ -321,6 +467,11 @@ Team members:
 </details>
 
 #### Finding the categorical value
+
+```{r}
+column <- names(df)[sapply(df, is.character)]
+column
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -332,6 +483,10 @@ Team members:
 
 #### Finding the continuous value
 
+```{r}
+continuous_col <- names(df)[!sapply(df, is.character)]
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
@@ -342,6 +497,10 @@ Team members:
 
 ## Handling categorical data
 
+```{r}
+categorical <- df[column]
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
@@ -349,12 +508,20 @@ Team members:
   ```
 </details>
 
+```{r}
+head(categorical)
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
   categorical.head()
   ```
 </details>
+
+```{r}
+table(categorical$Airline)
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -365,6 +532,12 @@ Team members:
 
 ### Airline vs Price Analysis
 
+```{r}
+ggplot(data = df, aes(x = reorder(Airline, -Price), y = Price)) +
+  geom_boxplot() +
+  labs(x = "Airline", y = "Price")
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
@@ -372,6 +545,12 @@ Team members:
   sns.boxplot(x='Airline',y='Price',data=df.sort_values('Price',ascending=False))
   ```
 </details>
+
+```{r}
+ggplot(data = df, aes(x = reorder(Total_Stops, -Price), y = Price)) +
+  geom_boxplot() +
+  labs(x = "Total_Stops", y = "Price")
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -381,6 +560,12 @@ Team members:
   ```
 </details>
 
+```{r}
+Airline <- as.data.frame(model.matrix(~ Airline - 1, data = categorical))
+new_names <- gsub("Airline", "", colnames(Airline))
+Airline <- setNames(Airline, new_names)
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
@@ -389,6 +574,10 @@ Team members:
   ```
 </details>
 
+```{r}
+head(Airline)
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
@@ -396,12 +585,22 @@ Team members:
   ```
 </details>
 
+```{r}
+table(categorical$Source)
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
   categorical['Source'].value_counts()
   ```
 </details>
+
+```{r}
+ggplot(data = df, aes(x = reorder(Source, -Price), y = Price)) +
+  geom_boxplot() +
+  labs(x = "Source", y = "Price")
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -412,6 +611,14 @@ Team members:
   ```
 </details>
 
+```{r}
+Source <- as.data.frame(model.matrix(~ Source - 1, data = categorical))
+new_names <- gsub("Source", "", colnames(Source))
+Source <- setNames(Source, new_names)
+
+head(Source)
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
@@ -421,12 +628,22 @@ Team members:
   ```
 </details>
 
+```{r}
+table(categorical$Destination)
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
   categorical['Destination'].value_counts()
   ```
 </details>
+
+```{r}
+ggplot(data = df, aes(x = reorder(Destination, -Price), y = Price)) +
+  geom_boxplot() +
+  labs(x = "Destination", y = "Price")
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -435,6 +652,14 @@ Team members:
   sns.boxplot(x='Destination',y='Price',data=df.sort_values('Price',ascending=False))
   ```
 </details>
+
+```{r}
+Destination <- as.data.frame(model.matrix(~ Destination - 1, data = categorical))
+new_names <- gsub("Destination", "", colnames(Destination))
+Destination <- setNames(Destination, new_names)
+
+head(Destination)
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -445,6 +670,10 @@ Team members:
   ```
 </details>
 
+```{r}
+table(categorical$Route)
+```
+
 <details>
   <summary>Click to show Python code</summary>
   ```python
@@ -452,6 +681,14 @@ Team members:
   categorical['Route'].value_counts()
   ```
 </details>
+
+```{r}
+categorical$Route1 <- sapply(strsplit(as.character(categorical$Route), "→"), "[", 1)
+categorical$Route2 <- sapply(strsplit(as.character(categorical$Route), "→"), "[", 2)
+categorical$Route3 <- sapply(strsplit(as.character(categorical$Route), "→"), "[", 3)
+categorical$Route4 <- sapply(strsplit(as.character(categorical$Route), "→"), "[", 4)
+categorical$Route5 <- sapply(strsplit(as.character(categorical$Route), "→"), "[", 5)
+```
 
 <details>
   <summary>Click to show Python code</summary>
@@ -463,6 +700,10 @@ Team members:
   categorical['Route5']=categorical['Route'].str.split('→').str[4]
   ```
 </details>
+
+```{r}
+
+```
 
 ## Feature Selection
 

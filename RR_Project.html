@@ -12,7 +12,7 @@
 
 <meta name="author" content="Robert Kowalczyk, Szymon Socha, Karolina Szczęsna" />
 
-<meta name="date" content="2023-05-10" />
+<meta name="date" content="2023-05-11" />
 
 <title>Reproducible Research Project</title>
 
@@ -152,7 +152,7 @@ code span.ot { color: #007020; }
 Project</h1>
 <h4 class="author project-author">Robert Kowalczyk, Szymon Socha,
 Karolina Szczęsna</h4>
-<h4 class="date project-date">2023-05-10</h4>
+<h4 class="date project-date">2023-05-11</h4>
 </section>
 
 
@@ -199,383 +199,892 @@ font-weight: bold;
 <li>Szymon Socha</li>
 <li>Karolina Szczęsna</li>
 </ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.2     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+## ✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.1     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#library(caret)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#library(gridExtra)</span></span></code></pre></div>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#importing libraries</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> pandas <span class="im">as</span> pd </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> numpy <span class="im">as</span> np </span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> seaborn <span class="im">as</span> sns </span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split,GridSearchCV</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score,confusion_matrix</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> warnings</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  warnings.filterwarnings(<span class="st">&#39;ignore&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#importing libraries</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> pandas <span class="im">as</span> pd </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> numpy <span class="im">as</span> np </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> seaborn <span class="im">as</span> sns </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split,GridSearchCV</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score,confusion_matrix</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> warnings</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  warnings.filterwarnings(<span class="st">&#39;ignore&#39;</span>)</span></code></pre></div>
 </details>
 <div id="importing-dataset" class="section level2">
 <h2>Importing dataset</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">&#39;data/Data_Train.xlsx&#39;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 11
+##   Airline     Date_of_Journey Source   Destination Route   Dep_Time Arrival_Time
+##   &lt;chr&gt;       &lt;chr&gt;           &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;       
+## 1 IndiGo      24/03/2019      Banglore New Delhi   BLR → … 22:20    01:10 22 Mar
+## 2 Air India   1/05/2019       Kolkata  Banglore    CCU → … 05:50    13:15       
+## 3 Jet Airways 9/06/2019       Delhi    Cochin      DEL → … 09:25    04:25 10 Jun
+## 4 IndiGo      12/05/2019      Kolkata  Banglore    CCU → … 18:05    23:30       
+## 5 IndiGo      01/03/2019      Banglore New Delhi   BLR → … 16:50    21:35       
+## 6 SpiceJet    24/06/2019      Kolkata  Banglore    CCU → … 09:00    11:25       
+## # ℹ 4 more variables: Duration &lt;chr&gt;, Total_Stops &lt;chr&gt;, Additional_Info &lt;chr&gt;,
+## #   Price &lt;dbl&gt;</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>  df<span class="op">=</span>pd.read_excel(<span class="st">&#39;/kaggle/input/flight-fare-prediction-mh/Data_Train.xlsx&#39;</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  df.head()</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>  df<span class="op">=</span>pd.read_excel(<span class="st">&#39;/kaggle/input/flight-fare-prediction-mh/Data_Train.xlsx&#39;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  df.head()</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df)</span></code></pre></div>
+<pre><code>## tibble [10,683 × 11] (S3: tbl_df/tbl/data.frame)
+##  $ Airline        : chr [1:10683] &quot;IndiGo&quot; &quot;Air India&quot; &quot;Jet Airways&quot; &quot;IndiGo&quot; ...
+##  $ Date_of_Journey: chr [1:10683] &quot;24/03/2019&quot; &quot;1/05/2019&quot; &quot;9/06/2019&quot; &quot;12/05/2019&quot; ...
+##  $ Source         : chr [1:10683] &quot;Banglore&quot; &quot;Kolkata&quot; &quot;Delhi&quot; &quot;Kolkata&quot; ...
+##  $ Destination    : chr [1:10683] &quot;New Delhi&quot; &quot;Banglore&quot; &quot;Cochin&quot; &quot;Banglore&quot; ...
+##  $ Route          : chr [1:10683] &quot;BLR → DEL&quot; &quot;CCU → IXR → BBI → BLR&quot; &quot;DEL → LKO → BOM → COK&quot; &quot;CCU → NAG → BLR&quot; ...
+##  $ Dep_Time       : chr [1:10683] &quot;22:20&quot; &quot;05:50&quot; &quot;09:25&quot; &quot;18:05&quot; ...
+##  $ Arrival_Time   : chr [1:10683] &quot;01:10 22 Mar&quot; &quot;13:15&quot; &quot;04:25 10 Jun&quot; &quot;23:30&quot; ...
+##  $ Duration       : chr [1:10683] &quot;2h 50m&quot; &quot;7h 25m&quot; &quot;19h&quot; &quot;5h 25m&quot; ...
+##  $ Total_Stops    : chr [1:10683] &quot;non-stop&quot; &quot;2 stops&quot; &quot;2 stops&quot; &quot;1 stop&quot; ...
+##  $ Additional_Info: chr [1:10683] &quot;No info&quot; &quot;No info&quot; &quot;No info&quot; &quot;No info&quot; ...
+##  $ Price          : num [1:10683] 3897 7662 13882 6218 13302 ...</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>  df.info()</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>  df.info()</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df)</span></code></pre></div>
+<pre><code>##    Airline          Date_of_Journey       Source          Destination       
+##  Length:10683       Length:10683       Length:10683       Length:10683      
+##  Class :character   Class :character   Class :character   Class :character  
+##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+##                                                                             
+##                                                                             
+##                                                                             
+##     Route             Dep_Time         Arrival_Time         Duration        
+##  Length:10683       Length:10683       Length:10683       Length:10683      
+##  Class :character   Class :character   Class :character   Class :character  
+##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+##                                                                             
+##                                                                             
+##                                                                             
+##  Total_Stops        Additional_Info        Price      
+##  Length:10683       Length:10683       Min.   : 1759  
+##  Class :character   Class :character   1st Qu.: 5277  
+##  Mode  :character   Mode  :character   Median : 8372  
+##                                        Mean   : 9087  
+##                                        3rd Qu.:12373  
+##                                        Max.   :79512</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>  df.describe()</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>  df.describe()</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(df)</span></code></pre></div>
+<pre><code>## [1] 10683    11</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>  df.shape</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>  df.shape</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_all</span>(<span class="sc">~</span><span class="fu">sum</span>(<span class="fu">is.na</span>(.)))</span></code></pre></div>
+<pre><code>## # A tibble: 1 × 11
+##   Airline Date_of_Journey Source Destination Route Dep_Time Arrival_Time
+##     &lt;int&gt;           &lt;int&gt;  &lt;int&gt;       &lt;int&gt; &lt;int&gt;    &lt;int&gt;        &lt;int&gt;
+## 1       0               0      0           0     1        0            0
+## # ℹ 4 more variables: Duration &lt;int&gt;, Total_Stops &lt;int&gt;, Additional_Info &lt;int&gt;,
+## #   Price &lt;int&gt;</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>  df.isnull().<span class="bu">sum</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>  df.isnull().<span class="bu">sum</span>()</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_all</span>(<span class="sc">~</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(.))) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">&quot;colname&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;n_of_nas&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x =</span> colname, <span class="at">y=</span>n_of_nas)) <span class="sc">+</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">&#39;identity&#39;</span>, <span class="at">fill =</span> <span class="st">&#39;steelblue&#39;</span>) <span class="sc">+</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&#39;Column&#39;</span>, <span class="at">y =</span> <span class="st">&#39;No. of NAs&#39;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> missingno <span class="im">as</span> msno</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  msno.bar(df)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  plt.show</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> missingno <span class="im">as</span> msno</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  msno.bar(df)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  plt.show</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">drop_na</span>()</span></code></pre></div>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>  df.dropna(inplace<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>  df.dropna(inplace<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> <span class="fu">summarise_all</span>(<span class="sc">~</span><span class="fu">sum</span>(<span class="fu">is.na</span>(.)))</span></code></pre></div>
+<pre><code>## # A tibble: 1 × 11
+##   Airline Date_of_Journey Source Destination Route Dep_Time Arrival_Time
+##     &lt;int&gt;           &lt;int&gt;  &lt;int&gt;       &lt;int&gt; &lt;int&gt;    &lt;int&gt;        &lt;int&gt;
+## 1       0               0      0           0     0        0            0
+## # ℹ 4 more variables: Duration &lt;int&gt;, Total_Stops &lt;int&gt;, Additional_Info &lt;int&gt;,
+## #   Price &lt;int&gt;</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>  df.isnull().<span class="bu">sum</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>  df.isnull().<span class="bu">sum</span>()</span></code></pre></div>
 </details>
 <div id="data-cleaning" class="section level3">
 <h3>Data Cleaning</h3>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(df)</span></code></pre></div>
+<pre><code>## Rows: 10,682
+## Columns: 11
+## $ Airline         &lt;chr&gt; &quot;IndiGo&quot;, &quot;Air India&quot;, &quot;Jet Airways&quot;, &quot;IndiGo&quot;, &quot;IndiG…
+## $ Date_of_Journey &lt;chr&gt; &quot;24/03/2019&quot;, &quot;1/05/2019&quot;, &quot;9/06/2019&quot;, &quot;12/05/2019&quot;, …
+## $ Source          &lt;chr&gt; &quot;Banglore&quot;, &quot;Kolkata&quot;, &quot;Delhi&quot;, &quot;Kolkata&quot;, &quot;Banglore&quot;,…
+## $ Destination     &lt;chr&gt; &quot;New Delhi&quot;, &quot;Banglore&quot;, &quot;Cochin&quot;, &quot;Banglore&quot;, &quot;New De…
+## $ Route           &lt;chr&gt; &quot;BLR → DEL&quot;, &quot;CCU → IXR → BBI → BLR&quot;, &quot;DEL → LKO → BOM…
+## $ Dep_Time        &lt;chr&gt; &quot;22:20&quot;, &quot;05:50&quot;, &quot;09:25&quot;, &quot;18:05&quot;, &quot;16:50&quot;, &quot;09:00&quot;, …
+## $ Arrival_Time    &lt;chr&gt; &quot;01:10 22 Mar&quot;, &quot;13:15&quot;, &quot;04:25 10 Jun&quot;, &quot;23:30&quot;, &quot;21:…
+## $ Duration        &lt;chr&gt; &quot;2h 50m&quot;, &quot;7h 25m&quot;, &quot;19h&quot;, &quot;5h 25m&quot;, &quot;4h 45m&quot;, &quot;2h 25m…
+## $ Total_Stops     &lt;chr&gt; &quot;non-stop&quot;, &quot;2 stops&quot;, &quot;2 stops&quot;, &quot;1 stop&quot;, &quot;1 stop&quot;, …
+## $ Additional_Info &lt;chr&gt; &quot;No info&quot;, &quot;No info&quot;, &quot;No info&quot;, &quot;No info&quot;, &quot;No info&quot;,…
+## $ Price           &lt;dbl&gt; 3897, 7662, 13882, 6218, 13302, 3873, 11087, 22270, 11…</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>  df.dtypes </span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>  df.dtypes </span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df)</span></code></pre></div>
+<pre><code>##  [1] &quot;Airline&quot;         &quot;Date_of_Journey&quot; &quot;Source&quot;          &quot;Destination&quot;    
+##  [5] &quot;Route&quot;           &quot;Dep_Time&quot;        &quot;Arrival_Time&quot;    &quot;Duration&quot;       
+##  [9] &quot;Total_Stops&quot;     &quot;Additional_Info&quot; &quot;Price&quot;</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> change_into_datetime(col):</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>      df[col]<span class="op">=</span>pd.to_datetime(df[col])</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>  df.columns</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Date_of_Journey <span class="ot">&lt;-</span> <span class="fu">as.POSIXct</span>(df<span class="sc">$</span>Date_of_Journey, <span class="at">format =</span> <span class="st">&quot;%d/%m/%Y&quot;</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Dep_Time <span class="ot">&lt;-</span> <span class="fu">as.POSIXct</span>(df<span class="sc">$</span>Dep_Time, <span class="at">format =</span> <span class="st">&quot;%H:%M&quot;</span>)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Arrival_Time <span class="ot">&lt;-</span> <span class="fu">as.POSIXct</span>(df<span class="sc">$</span>Arrival_Time, <span class="at">format =</span> <span class="st">&quot;%H:%M&quot;</span>)</span></code></pre></div>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>  df.columns</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> change_into_datetime(col):</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>      df[col]<span class="op">=</span>pd.to_datetime(df[col])</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i <span class="kw">in</span> [<span class="st">&#39;Date_of_Journey&#39;</span>,<span class="st">&#39;Dep_Time&#39;</span>, <span class="st">&#39;Arrival_Time&#39;</span>]:</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    change_into_datetime(i)</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(df)</span></code></pre></div>
+<pre><code>## Rows: 10,682
+## Columns: 11
+## $ Airline         &lt;chr&gt; &quot;IndiGo&quot;, &quot;Air India&quot;, &quot;Jet Airways&quot;, &quot;IndiGo&quot;, &quot;IndiG…
+## $ Date_of_Journey &lt;dttm&gt; 2019-03-24, 2019-05-01, 2019-06-09, 2019-05-12, 2019-…
+## $ Source          &lt;chr&gt; &quot;Banglore&quot;, &quot;Kolkata&quot;, &quot;Delhi&quot;, &quot;Kolkata&quot;, &quot;Banglore&quot;,…
+## $ Destination     &lt;chr&gt; &quot;New Delhi&quot;, &quot;Banglore&quot;, &quot;Cochin&quot;, &quot;Banglore&quot;, &quot;New De…
+## $ Route           &lt;chr&gt; &quot;BLR → DEL&quot;, &quot;CCU → IXR → BBI → BLR&quot;, &quot;DEL → LKO → BOM…
+## $ Dep_Time        &lt;dttm&gt; 2023-05-11 22:20:00, 2023-05-11 05:50:00, 2023-05-11 …
+## $ Arrival_Time    &lt;dttm&gt; 2023-05-11 01:10:00, 2023-05-11 13:15:00, 2023-05-11 …
+## $ Duration        &lt;chr&gt; &quot;2h 50m&quot;, &quot;7h 25m&quot;, &quot;19h&quot;, &quot;5h 25m&quot;, &quot;4h 45m&quot;, &quot;2h 25m…
+## $ Total_Stops     &lt;chr&gt; &quot;non-stop&quot;, &quot;2 stops&quot;, &quot;2 stops&quot;, &quot;1 stop&quot;, &quot;1 stop&quot;, …
+## $ Additional_Info &lt;chr&gt; &quot;No info&quot;, &quot;No info&quot;, &quot;No info&quot;, &quot;No info&quot;, &quot;No info&quot;,…
+## $ Price           &lt;dbl&gt; 3897, 7662, 13882, 6218, 13302, 3873, 11087, 22270, 11…</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i <span class="kw">in</span> [<span class="st">&#39;Date_of_Journey&#39;</span>,<span class="st">&#39;Dep_Time&#39;</span>, <span class="st">&#39;Arrival_Time&#39;</span>]:</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    change_into_datetime(i)</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>  df.dtypes</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>journey_day <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">format</span>(df<span class="sc">$</span>Date_of_Journey, <span class="st">&quot;%d&quot;</span>))</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>journey_month <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">format</span>(df<span class="sc">$</span>Date_of_Journey, <span class="st">&quot;%m&quot;</span>))</span></code></pre></div>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>  df.dtypes</span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>  df[<span class="st">&#39;journey_day&#39;</span>]<span class="op">=</span>df[<span class="st">&#39;Date_of_Journey&#39;</span>].dt.day</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  df[<span class="st">&#39;journey_month&#39;</span>]<span class="op">=</span>df[<span class="st">&#39;Date_of_Journey&#39;</span>].dt.month</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df, <span class="dv">10</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 10 × 13
+##    Airline      Date_of_Journey     Source Destination Route Dep_Time           
+##    &lt;chr&gt;        &lt;dttm&gt;              &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt; &lt;dttm&gt;             
+##  1 IndiGo       2019-03-24 00:00:00 Bangl… New Delhi   BLR … 2023-05-11 22:20:00
+##  2 Air India    2019-05-01 00:00:00 Kolka… Banglore    CCU … 2023-05-11 05:50:00
+##  3 Jet Airways  2019-06-09 00:00:00 Delhi  Cochin      DEL … 2023-05-11 09:25:00
+##  4 IndiGo       2019-05-12 00:00:00 Kolka… Banglore    CCU … 2023-05-11 18:05:00
+##  5 IndiGo       2019-03-01 00:00:00 Bangl… New Delhi   BLR … 2023-05-11 16:50:00
+##  6 SpiceJet     2019-06-24 00:00:00 Kolka… Banglore    CCU … 2023-05-11 09:00:00
+##  7 Jet Airways  2019-03-12 00:00:00 Bangl… New Delhi   BLR … 2023-05-11 18:55:00
+##  8 Jet Airways  2019-03-01 00:00:00 Bangl… New Delhi   BLR … 2023-05-11 08:00:00
+##  9 Jet Airways  2019-03-12 00:00:00 Bangl… New Delhi   BLR … 2023-05-11 08:55:00
+## 10 Multiple ca… 2019-05-27 00:00:00 Delhi  Cochin      DEL … 2023-05-11 11:25:00
+## # ℹ 7 more variables: Arrival_Time &lt;dttm&gt;, Duration &lt;chr&gt;, Total_Stops &lt;chr&gt;,
+## #   Additional_Info &lt;chr&gt;, Price &lt;dbl&gt;, journey_day &lt;dbl&gt;, journey_month &lt;dbl&gt;</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>  df[<span class="st">&#39;journey_day&#39;</span>]<span class="op">=</span>df[<span class="st">&#39;Date_of_Journey&#39;</span>].dt.day</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  df[<span class="st">&#39;journey_month&#39;</span>]<span class="op">=</span>df[<span class="st">&#39;Date_of_Journey&#39;</span>].dt.month</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>  df.head(<span class="dv">10</span>)</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>Date_of_Journey)</span></code></pre></div>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>  df.head(<span class="dv">10</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>  df.drop(<span class="st">&#39;Date_of_Journey&#39;</span>, axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>extract_hour <span class="ot">&lt;-</span> <span class="cf">function</span>(data, col){</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  data[[<span class="fu">paste0</span>(col, <span class="st">&#39;_hour&#39;</span>)]] <span class="ot">&lt;-</span> <span class="fu">hour</span>(data[[col]])</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>extract_min <span class="ot">&lt;-</span> <span class="cf">function</span>(data, col){</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  data[[<span class="fu">paste0</span>(col, <span class="st">&#39;_min&#39;</span>)]] <span class="ot">&lt;-</span> <span class="fu">minute</span>(data[[col]])</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>drop_col <span class="ot">&lt;-</span> <span class="cf">function</span>(data, col){</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>  data[[col]] <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>  df.drop(<span class="st">&#39;Date_of_Journey&#39;</span>, axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> extract_hour(data,col):</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    data[col<span class="op">+</span><span class="st">&#39;_hour&#39;</span>]<span class="op">=</span>data[col].dt.hour</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> extract_min(data,col):</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>      data[col<span class="op">+</span><span class="st">&#39;_min&#39;</span>]<span class="op">=</span>data[col].dt.minute</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> drop_col(data,col):</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>      data.drop(col,axis<span class="op">=</span><span class="dv">1</span>,inplace<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">extract_hour</span>(df, <span class="st">&#39;Dep_Time&#39;</span>)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">extract_min</span>(df, <span class="st">&#39;Dep_Time&#39;</span>)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">drop_col</span>(df, <span class="st">&#39;Dep_Time&#39;</span>)</span></code></pre></div>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> extract_hour(data,col):</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    data[col<span class="op">+</span><span class="st">&#39;_hour&#39;</span>]<span class="op">=</span>data[col].dt.hour</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> extract_min(data,col):</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>      data[col<span class="op">+</span><span class="st">&#39;_min&#39;</span>]<span class="op">=</span>data[col].dt.minute</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> drop_col(data,col):</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>      data.drop(col,axis<span class="op">=</span><span class="dv">1</span>,inplace<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Departure time is when a plane leaves the gate. </span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Similar to Date_of_Journey we can extract values from Dep_Time</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  extract_hour(df,<span class="st">&#39;Dep_Time&#39;</span>)</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#extracting minutes</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  extract_min(df,<span class="st">&#39;Dep_Time&#39;</span>)</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#drop the column</span></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>  drop_col(df,<span class="st">&#39;Dep_Time&#39;</span>)</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">extract_hour</span>(df, <span class="st">&#39;Arrival_Time&#39;</span>)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">extract_min</span>(df, <span class="st">&#39;Arrival_Time&#39;</span>)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">drop_col</span>(df, <span class="st">&#39;Arrival_Time&#39;</span>)</span></code></pre></div>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Departure time is when a plane leaves the gate. </span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Similar to Date_of_Journey we can extract values from Dep_Time</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  extract_hour(df,<span class="st">&#39;Dep_Time&#39;</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#extracting minutes</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  extract_min(df,<span class="st">&#39;Dep_Time&#39;</span>)</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#drop the column</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  drop_col(df,<span class="st">&#39;Dep_Time&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#extracting hour</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  extract_hour(df,<span class="st">&#39;Arrival_Time&#39;</span>)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#extracting min</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  extract_min(df,<span class="st">&#39;Arrival_Time&#39;</span>)</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#drop the column</span></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>  drop_col(df,<span class="st">&#39;Arrival_Time&#39;</span>)</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df, <span class="dv">10</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 10 × 14
+##    Airline   Source Destination Route Duration Total_Stops Additional_Info Price
+##    &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;           &lt;dbl&gt;
+##  1 IndiGo    Bangl… New Delhi   BLR … 2h 50m   non-stop    No info          3897
+##  2 Air India Kolka… Banglore    CCU … 7h 25m   2 stops     No info          7662
+##  3 Jet Airw… Delhi  Cochin      DEL … 19h      2 stops     No info         13882
+##  4 IndiGo    Kolka… Banglore    CCU … 5h 25m   1 stop      No info          6218
+##  5 IndiGo    Bangl… New Delhi   BLR … 4h 45m   1 stop      No info         13302
+##  6 SpiceJet  Kolka… Banglore    CCU … 2h 25m   non-stop    No info          3873
+##  7 Jet Airw… Bangl… New Delhi   BLR … 15h 30m  1 stop      In-flight meal… 11087
+##  8 Jet Airw… Bangl… New Delhi   BLR … 21h 5m   1 stop      No info         22270
+##  9 Jet Airw… Bangl… New Delhi   BLR … 25h 30m  1 stop      In-flight meal… 11087
+## 10 Multiple… Delhi  Cochin      DEL … 7h 50m   1 stop      No info          8625
+## # ℹ 6 more variables: journey_day &lt;dbl&gt;, journey_month &lt;dbl&gt;,
+## #   Dep_Time_hour &lt;int&gt;, Dep_Time_min &lt;int&gt;, Arrival_Time_hour &lt;int&gt;,
+## #   Arrival_Time_min &lt;int&gt;</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#extracting hour</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  extract_hour(df,<span class="st">&#39;Arrival_Time&#39;</span>)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#extracting min</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  extract_min(df,<span class="st">&#39;Arrival_Time&#39;</span>)</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#drop the column</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  drop_col(df,<span class="st">&#39;Arrival_Time&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>  df.head(<span class="dv">10</span>)</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Duration =</span> <span class="fu">case_when</span>(<span class="fu">grepl</span>(<span class="st">&quot;^[0-9]+h [0-9]+m$&quot;</span>, Duration) <span class="sc">~</span> Duration,</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>                              <span class="fu">grepl</span>(<span class="st">&quot;^[0-9]+h&quot;</span>, Duration) <span class="sc">~</span> <span class="fu">paste0</span>(Duration, <span class="st">&quot; 0m&quot;</span>),</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>                              <span class="fu">grepl</span>(<span class="st">&quot;[0-9]+m$&quot;</span>, Duration) <span class="sc">~</span> <span class="fu">paste0</span>(<span class="st">&quot;0h &quot;</span>, Duration),</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>                              <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_character_</span>)) <span class="ot">-&gt;</span> df</span></code></pre></div>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb21"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>  df.head(<span class="dv">10</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>  duration<span class="op">=</span><span class="bu">list</span>(df[<span class="st">&#39;Duration&#39;</span>])</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(duration)):</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> <span class="bu">len</span>(duration[i].split(<span class="st">&#39; &#39;</span>))<span class="op">==</span><span class="dv">2</span>:</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>          <span class="cf">pass</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span>:</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>          <span class="cf">if</span> <span class="st">&#39;h&#39;</span> <span class="kw">in</span> duration[i]: <span class="co"># Check if duration contains only hour</span></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>               duration[i]<span class="op">=</span>duration[i] <span class="op">+</span> <span class="st">&#39; 0m&#39;</span> <span class="co"># Adds 0 minute</span></span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>          <span class="cf">else</span>:</span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>               duration[i]<span class="op">=</span><span class="st">&#39;0h &#39;</span><span class="op">+</span> duration[i]</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 14
+##   Airline    Source Destination Route Duration Total_Stops Additional_Info Price
+##   &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;           &lt;dbl&gt;
+## 1 IndiGo     Bangl… New Delhi   BLR … 2h 50m   non-stop    No info          3897
+## 2 Air India  Kolka… Banglore    CCU … 7h 25m   2 stops     No info          7662
+## 3 Jet Airwa… Delhi  Cochin      DEL … 19h 0m   2 stops     No info         13882
+## 4 IndiGo     Kolka… Banglore    CCU … 5h 25m   1 stop      No info          6218
+## 5 IndiGo     Bangl… New Delhi   BLR … 4h 45m   1 stop      No info         13302
+## 6 SpiceJet   Kolka… Banglore    CCU … 2h 25m   non-stop    No info          3873
+## # ℹ 6 more variables: journey_day &lt;dbl&gt;, journey_month &lt;dbl&gt;,
+## #   Dep_Time_hour &lt;int&gt;, Dep_Time_min &lt;int&gt;, Arrival_Time_hour &lt;int&gt;,
+## #   Arrival_Time_min &lt;int&gt;</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb22"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>  duration<span class="op">=</span><span class="bu">list</span>(df[<span class="st">&#39;Duration&#39;</span>])</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(duration)):</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> <span class="bu">len</span>(duration[i].split(<span class="st">&#39; &#39;</span>))<span class="op">==</span><span class="dv">2</span>:</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>          <span class="cf">pass</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span>:</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>          <span class="cf">if</span> <span class="st">&#39;h&#39;</span> <span class="kw">in</span> duration[i]: <span class="co"># Check if duration contains only hour</span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>               duration[i]<span class="op">=</span>duration[i] <span class="op">+</span> <span class="st">&#39; 0m&#39;</span> <span class="co"># Adds 0 minute</span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>          <span class="cf">else</span>:</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>               duration[i]<span class="op">=</span><span class="st">&#39;0h &#39;</span><span class="op">+</span> duration[i]</span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>  df.head()</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>hour <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(<span class="fu">grepl</span>(<span class="st">&quot;h&quot;</span>, x), <span class="fu">as.numeric</span>(<span class="fu">strsplit</span>(x, <span class="st">&#39;h&#39;</span>)[[<span class="dv">1</span>]][<span class="dv">1</span>]), <span class="dv">0</span>)</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>minutes <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(<span class="fu">is.na</span>(x[<span class="dv">2</span>]), <span class="dv">0</span>, <span class="fu">as.numeric</span>(<span class="fu">sub</span>(<span class="st">&quot;.*?(</span><span class="sc">\\</span><span class="st">d+)m.*&quot;</span>, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">1&quot;</span>, x[<span class="dv">2</span>])))</span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>  df[<span class="st">&#39;Duration&#39;</span>]<span class="op">=</span>duration</span></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> hour(x):</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> x.split(<span class="st">&#39; &#39;</span>)[<span class="dv">0</span>][<span class="dv">0</span>:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> minutes(x):</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> x.split(<span class="st">&#39; &#39;</span>)[<span class="dv">1</span>][<span class="dv">0</span>:<span class="op">-</span><span class="dv">1</span>]</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>dur_hour <span class="ot">&lt;-</span> <span class="fu">sapply</span>(df<span class="sc">$</span>Duration, hour)</span></code></pre></div>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>  df.head()</span></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>  df[<span class="st">&#39;dur_hour&#39;</span>]<span class="op">=</span>df[<span class="st">&#39;Duration&#39;</span>].<span class="bu">apply</span>(hour)</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>dur_min <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">strsplit</span>(df<span class="sc">$</span>Duration, <span class="st">&#39; &#39;</span>), minutes)</span></code></pre></div>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb25"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> hour(x):</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> x.split(<span class="st">&#39; &#39;</span>)[<span class="dv">0</span>][<span class="dv">0</span>:<span class="op">-</span><span class="dv">1</span>]</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> minutes(x):</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> x.split(<span class="st">&#39; &#39;</span>)[<span class="dv">1</span>][<span class="dv">0</span>:<span class="op">-</span><span class="dv">1</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>  df[<span class="st">&#39;dur_min&#39;</span>]<span class="op">=</span>df[<span class="st">&#39;Duration&#39;</span>].<span class="bu">apply</span>(minutes)</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df, <span class="dv">10</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 10 × 16
+##    Airline   Source Destination Route Duration Total_Stops Additional_Info Price
+##    &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;           &lt;dbl&gt;
+##  1 IndiGo    Bangl… New Delhi   BLR … 2h 50m   non-stop    No info          3897
+##  2 Air India Kolka… Banglore    CCU … 7h 25m   2 stops     No info          7662
+##  3 Jet Airw… Delhi  Cochin      DEL … 19h 0m   2 stops     No info         13882
+##  4 IndiGo    Kolka… Banglore    CCU … 5h 25m   1 stop      No info          6218
+##  5 IndiGo    Bangl… New Delhi   BLR … 4h 45m   1 stop      No info         13302
+##  6 SpiceJet  Kolka… Banglore    CCU … 2h 25m   non-stop    No info          3873
+##  7 Jet Airw… Bangl… New Delhi   BLR … 15h 30m  1 stop      In-flight meal… 11087
+##  8 Jet Airw… Bangl… New Delhi   BLR … 21h 5m   1 stop      No info         22270
+##  9 Jet Airw… Bangl… New Delhi   BLR … 25h 30m  1 stop      In-flight meal… 11087
+## 10 Multiple… Delhi  Cochin      DEL … 7h 50m   1 stop      No info          8625
+## # ℹ 8 more variables: journey_day &lt;dbl&gt;, journey_month &lt;dbl&gt;,
+## #   Dep_Time_hour &lt;int&gt;, Dep_Time_min &lt;int&gt;, Arrival_Time_hour &lt;int&gt;,
+## #   Arrival_Time_min &lt;int&gt;, dur_hour &lt;dbl&gt;, dur_min &lt;dbl&gt;</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>  df[<span class="st">&#39;dur_hour&#39;</span>]<span class="op">=</span>df[<span class="st">&#39;Duration&#39;</span>].<span class="bu">apply</span>(hour)</span></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>  df.head(<span class="dv">10</span>)</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">drop_col</span>(df, <span class="st">&#39;Duration&#39;</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 10,682 × 15
+##    Airline           Source  Destination Route Total_Stops Additional_Info Price
+##    &lt;chr&gt;             &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;           &lt;dbl&gt;
+##  1 IndiGo            Banglo… New Delhi   BLR … non-stop    No info          3897
+##  2 Air India         Kolkata Banglore    CCU … 2 stops     No info          7662
+##  3 Jet Airways       Delhi   Cochin      DEL … 2 stops     No info         13882
+##  4 IndiGo            Kolkata Banglore    CCU … 1 stop      No info          6218
+##  5 IndiGo            Banglo… New Delhi   BLR … 1 stop      No info         13302
+##  6 SpiceJet          Kolkata Banglore    CCU … non-stop    No info          3873
+##  7 Jet Airways       Banglo… New Delhi   BLR … 1 stop      In-flight meal… 11087
+##  8 Jet Airways       Banglo… New Delhi   BLR … 1 stop      No info         22270
+##  9 Jet Airways       Banglo… New Delhi   BLR … 1 stop      In-flight meal… 11087
+## 10 Multiple carriers Delhi   Cochin      DEL … 1 stop      No info          8625
+## # ℹ 10,672 more rows
+## # ℹ 8 more variables: journey_day &lt;dbl&gt;, journey_month &lt;dbl&gt;,
+## #   Dep_Time_hour &lt;int&gt;, Dep_Time_min &lt;int&gt;, Arrival_Time_hour &lt;int&gt;,
+## #   Arrival_Time_min &lt;int&gt;, dur_hour &lt;dbl&gt;, dur_min &lt;dbl&gt;</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb27"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>  df[<span class="st">&#39;dur_min&#39;</span>]<span class="op">=</span>df[<span class="st">&#39;Duration&#39;</span>].<span class="bu">apply</span>(minutes)</span></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>  drop_col(df,<span class="st">&#39;Duration&#39;</span>)</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df)</span></code></pre></div>
+<pre><code>## tibble [10,682 × 16] (S3: tbl_df/tbl/data.frame)
+##  $ Airline          : chr [1:10682] &quot;IndiGo&quot; &quot;Air India&quot; &quot;Jet Airways&quot; &quot;IndiGo&quot; ...
+##  $ Source           : chr [1:10682] &quot;Banglore&quot; &quot;Kolkata&quot; &quot;Delhi&quot; &quot;Kolkata&quot; ...
+##  $ Destination      : chr [1:10682] &quot;New Delhi&quot; &quot;Banglore&quot; &quot;Cochin&quot; &quot;Banglore&quot; ...
+##  $ Route            : chr [1:10682] &quot;BLR → DEL&quot; &quot;CCU → IXR → BBI → BLR&quot; &quot;DEL → LKO → BOM → COK&quot; &quot;CCU → NAG → BLR&quot; ...
+##  $ Duration         : chr [1:10682] &quot;2h 50m&quot; &quot;7h 25m&quot; &quot;19h 0m&quot; &quot;5h 25m&quot; ...
+##  $ Total_Stops      : chr [1:10682] &quot;non-stop&quot; &quot;2 stops&quot; &quot;2 stops&quot; &quot;1 stop&quot; ...
+##  $ Additional_Info  : chr [1:10682] &quot;No info&quot; &quot;No info&quot; &quot;No info&quot; &quot;No info&quot; ...
+##  $ Price            : num [1:10682] 3897 7662 13882 6218 13302 ...
+##  $ journey_day      : num [1:10682] 24 1 9 12 1 24 12 1 12 27 ...
+##  $ journey_month    : num [1:10682] 3 5 6 5 3 6 3 3 3 5 ...
+##  $ Dep_Time_hour    : int [1:10682] 22 5 9 18 16 9 18 8 8 11 ...
+##  $ Dep_Time_min     : int [1:10682] 20 50 25 5 50 0 55 0 55 25 ...
+##  $ Arrival_Time_hour: int [1:10682] 1 13 4 23 21 11 10 5 10 19 ...
+##  $ Arrival_Time_min : int [1:10682] 10 15 25 30 35 25 25 5 25 15 ...
+##  $ dur_hour         : Named num [1:10682] 2 7 19 5 4 2 15 21 25 7 ...
+##   ..- attr(*, &quot;names&quot;)= chr [1:10682] &quot;2h 50m&quot; &quot;7h 25m&quot; &quot;19h 0m&quot; &quot;5h 25m&quot; ...
+##  $ dur_min          : num [1:10682] 50 25 0 25 45 25 30 5 30 50 ...</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb28"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>  df.head(<span class="dv">10</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb73"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>  df.dtypes</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>dur_hour <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(df<span class="sc">$</span>dur_hour)</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>dur_min <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(df<span class="sc">$</span>dur_min)</span></code></pre></div>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb29"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>  drop_col(df,<span class="st">&#39;Duration&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb75"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>  df[<span class="st">&#39;dur_hour&#39;</span>] <span class="op">=</span> df[<span class="st">&#39;dur_hour&#39;</span>].astype(<span class="bu">int</span>)</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>  df[<span class="st">&#39;dur_min&#39;</span>] <span class="op">=</span> df[<span class="st">&#39;dur_min&#39;</span>].astype(<span class="bu">int</span>)</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df)</span></code></pre></div>
+<pre><code>## tibble [10,682 × 16] (S3: tbl_df/tbl/data.frame)
+##  $ Airline          : chr [1:10682] &quot;IndiGo&quot; &quot;Air India&quot; &quot;Jet Airways&quot; &quot;IndiGo&quot; ...
+##  $ Source           : chr [1:10682] &quot;Banglore&quot; &quot;Kolkata&quot; &quot;Delhi&quot; &quot;Kolkata&quot; ...
+##  $ Destination      : chr [1:10682] &quot;New Delhi&quot; &quot;Banglore&quot; &quot;Cochin&quot; &quot;Banglore&quot; ...
+##  $ Route            : chr [1:10682] &quot;BLR → DEL&quot; &quot;CCU → IXR → BBI → BLR&quot; &quot;DEL → LKO → BOM → COK&quot; &quot;CCU → NAG → BLR&quot; ...
+##  $ Duration         : chr [1:10682] &quot;2h 50m&quot; &quot;7h 25m&quot; &quot;19h 0m&quot; &quot;5h 25m&quot; ...
+##  $ Total_Stops      : chr [1:10682] &quot;non-stop&quot; &quot;2 stops&quot; &quot;2 stops&quot; &quot;1 stop&quot; ...
+##  $ Additional_Info  : chr [1:10682] &quot;No info&quot; &quot;No info&quot; &quot;No info&quot; &quot;No info&quot; ...
+##  $ Price            : num [1:10682] 3897 7662 13882 6218 13302 ...
+##  $ journey_day      : num [1:10682] 24 1 9 12 1 24 12 1 12 27 ...
+##  $ journey_month    : num [1:10682] 3 5 6 5 3 6 3 3 3 5 ...
+##  $ Dep_Time_hour    : int [1:10682] 22 5 9 18 16 9 18 8 8 11 ...
+##  $ Dep_Time_min     : int [1:10682] 20 50 25 5 50 0 55 0 55 25 ...
+##  $ Arrival_Time_hour: int [1:10682] 1 13 4 23 21 11 10 5 10 19 ...
+##  $ Arrival_Time_min : int [1:10682] 10 15 25 30 35 25 25 5 25 15 ...
+##  $ dur_hour         : int [1:10682] 2 7 19 5 4 2 15 21 25 7 ...
+##  $ dur_min          : int [1:10682] 50 25 0 25 45 25 30 5 30 50 ...</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb30"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>  df.dtypes</span></code></pre></div>
-</details>
-<details>
-<summary>
-Click to show Python code
-</summary>
-<div class="sourceCode" id="cb31"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>  df[<span class="st">&#39;dur_hour&#39;</span>] <span class="op">=</span> df[<span class="st">&#39;dur_hour&#39;</span>].astype(<span class="bu">int</span>)</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  df[<span class="st">&#39;dur_min&#39;</span>] <span class="op">=</span> df[<span class="st">&#39;dur_min&#39;</span>].astype(<span class="bu">int</span>)</span></code></pre></div>
-</details>
-<details>
-<summary>
-Click to show Python code
-</summary>
-<div class="sourceCode" id="cb32"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>  df.dtypes</span></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>  df.dtypes</span></code></pre></div>
 </details>
 <div id="finding-the-categorical-value" class="section level4">
 <h4>Finding the categorical value</h4>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>column <span class="ot">&lt;-</span> <span class="fu">names</span>(df)[<span class="fu">sapply</span>(df, is.character)]</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>column</span></code></pre></div>
+<pre><code>## [1] &quot;Airline&quot;         &quot;Source&quot;          &quot;Destination&quot;     &quot;Route&quot;          
+## [5] &quot;Duration&quot;        &quot;Total_Stops&quot;     &quot;Additional_Info&quot;</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb33"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>  column<span class="op">=</span>[column <span class="cf">for</span> column <span class="kw">in</span> df.columns <span class="cf">if</span> df[column].dtype<span class="op">==</span><span class="st">&#39;object&#39;</span>]</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  column</span></code></pre></div>
+<div class="sourceCode" id="cb81"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>  column<span class="op">=</span>[column <span class="cf">for</span> column <span class="kw">in</span> df.columns <span class="cf">if</span> df[column].dtype<span class="op">==</span><span class="st">&#39;object&#39;</span>]</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>  column</span></code></pre></div>
 </details>
 </div>
 <div id="finding-the-continuous-value" class="section level4">
 <h4>Finding the continuous value</h4>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>continuous_col <span class="ot">&lt;-</span> <span class="fu">names</span>(df)[<span class="sc">!</span><span class="fu">sapply</span>(df, is.character)]</span></code></pre></div>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb34"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>  continuous_col <span class="op">=</span>[column <span class="cf">for</span> column <span class="kw">in</span> df.columns <span class="cf">if</span> df[column].dtype<span class="op">!=</span><span class="st">&#39;object&#39;</span>]</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  continuous_col</span></code></pre></div>
+<div class="sourceCode" id="cb83"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>  continuous_col <span class="op">=</span>[column <span class="cf">for</span> column <span class="kw">in</span> df.columns <span class="cf">if</span> df[column].dtype<span class="op">!=</span><span class="st">&#39;object&#39;</span>]</span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>  continuous_col</span></code></pre></div>
 </details>
 </div>
 </div>
 </div>
 <div id="handling-categorical-data" class="section level2">
 <h2>Handling categorical data</h2>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>categorical <span class="ot">&lt;-</span> df[column]</span></code></pre></div>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb35"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>  categorical <span class="op">=</span> df[column]</span></code></pre></div>
+<div class="sourceCode" id="cb85"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>  categorical <span class="op">=</span> df[column]</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(categorical)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 7
+##   Airline     Source   Destination Route    Duration Total_Stops Additional_Info
+##   &lt;chr&gt;       &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;       &lt;chr&gt;          
+## 1 IndiGo      Banglore New Delhi   BLR → D… 2h 50m   non-stop    No info        
+## 2 Air India   Kolkata  Banglore    CCU → I… 7h 25m   2 stops     No info        
+## 3 Jet Airways Delhi    Cochin      DEL → L… 19h 0m   2 stops     No info        
+## 4 IndiGo      Kolkata  Banglore    CCU → N… 5h 25m   1 stop      No info        
+## 5 IndiGo      Banglore New Delhi   BLR → N… 4h 45m   1 stop      No info        
+## 6 SpiceJet    Kolkata  Banglore    CCU → B… 2h 25m   non-stop    No info</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb36"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>  categorical.head()</span></code></pre></div>
+<div class="sourceCode" id="cb88"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>  categorical.head()</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(categorical<span class="sc">$</span>Airline)</span></code></pre></div>
+<pre><code>## 
+##                          Air Asia                         Air India 
+##                               319                              1751 
+##                             GoAir                            IndiGo 
+##                               194                              2053 
+##                       Jet Airways              Jet Airways Business 
+##                              3849                                 6 
+##                 Multiple carriers Multiple carriers Premium economy 
+##                              1196                                13 
+##                          SpiceJet                            Trujet 
+##                               818                                 1 
+##                           Vistara           Vistara Premium economy 
+##                               479                                 3</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb37"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Airline&#39;</span>].value_counts()</span></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Airline&#39;</span>].value_counts()</span></code></pre></div>
 </details>
 <div id="airline-vs-price-analysis" class="section level3">
 <h3>Airline vs Price Analysis</h3>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> df, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(Airline, <span class="sc">-</span>Price), <span class="at">y =</span> Price)) <span class="sc">+</span></span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Airline&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Price&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb38"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>  plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>,<span class="dv">8</span>))</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  sns.boxplot(x<span class="op">=</span><span class="st">&#39;Airline&#39;</span>,y<span class="op">=</span><span class="st">&#39;Price&#39;</span>,data<span class="op">=</span>df.sort_values(<span class="st">&#39;Price&#39;</span>,ascending<span class="op">=</span><span class="va">False</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb93"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>  plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>,<span class="dv">8</span>))</span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>  sns.boxplot(x<span class="op">=</span><span class="st">&#39;Airline&#39;</span>,y<span class="op">=</span><span class="st">&#39;Price&#39;</span>,data<span class="op">=</span>df.sort_values(<span class="st">&#39;Price&#39;</span>,ascending<span class="op">=</span><span class="va">False</span>))</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> df, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(Total_Stops, <span class="sc">-</span>Price), <span class="at">y =</span> Price)) <span class="sc">+</span></span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Total_Stops&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Price&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAqAAAAHgCAMAAABNUi8GAAAC5VBMVEUAAAABAQECAgIDAwMEBAQFBQUGBgYHBwcJCQkKCgoLCwsMDAwNDQ0ODg4QEBARERESEhITExMUFBQWFhYXFxcYGBgZGRkaGhobGxscHBwdHR0eHh4fHx8gICAhISEiIiIkJCQlJSUnJycpKSkqKiorKysuLi4vLy8wMDAxMTEzMzM0NDQ1NTU2NjY3Nzc4ODg5OTk6Ojo7Ozs8PDw9PT0+Pj4/Pz9AQEBBQUFCQkJDQ0NERERFRUVGRkZHR0dISEhJSUlKSkpLS0tMTExNTU1OTk5PT09QUFBRUVFSUlJTU1NUVFRVVVVWVlZXV1dYWFhZWVlaWlpbW1tcXFxdXV1eXl5fX19gYGBhYWFiYmJjY2NkZGRlZWVmZmZnZ2doaGhpaWlqampra2tsbGxtbW1ubm5vb29wcHBxcXFycnJzc3N0dHR1dXV2dnZ3d3d4eHh5eXl6enp7e3t8fHx9fX1+fn5/f3+AgICBgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+QkJCRkZGSkpKTk5OUlJSVlZWWlpaXl5eYmJiZmZmampqbm5ucnJydnZ2enp6fn5+goKChoaGioqKjo6OkpKSlpaWmpqanp6eoqKipqamqqqqrq6usrKytra2urq6vr6+wsLCxsbGysrKzs7O0tLS1tbW2tra3t7e4uLi5ubm6urq7u7u8vLy9vb2+vr6/v7/AwMDBwcHCwsLDw8PExMTFxcXGxsbHx8fIyMjJycnKysrLy8vMzMzNzc3Ozs7Pz8/Q0NDR0dHS0tLT09PU1NTV1dXW1tbX19fY2NjZ2dna2trb29vc3Nzd3d3e3t7f39/g4ODh4eHi4uLj4+Pk5OTl5eXm5ubn5+fo6Ojp6enq6urr6+vs7Ozt7e3u7u7v7+/w8PDx8fHy8vLz8/P09PT19fX29vb39/f4+Pj5+fn6+vr7+/v8/Pz9/f3+/v7///8k+jgIAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAcJUlEQVR4nO3de3xU9ZnH8di6drtra7XV3Xbbtd3udtuTgFIBuSlFLhGQWxCMIgJGLlVYQCQCUlFR3IBaiRSlWi021SIF1xrCRSCoyC0VEMMlBkIYyiUhTEhm5vl755yZWIgz4+9wnueZgfP9/MEhcV6/Z8a8OTNzZnImixDK4LLSfQUQShWAoowOQFFGB6AoowNQlNEBKMroWIDWee9Ucz3DKq463aw9sS54Rn3kmUb1kU2nGRY5zQk04L0TdIxhFVed4rje7go2q49salQfGW5gWOQkgAKoUADKE4AKBaA8AahQAMoTgAoFoDwBqFAAyhOACgWgPAGoUADKE4AKBaA8AahQAMoTgAoFoDwBqFBqQNeOGPJEkKiiYFhxOMkGQF0FoMYZAD3eb0fdg7+jUP624KSyxBsAdReAGmcA9OMRRMvm0OaJROsKE28A1F0AapwB0IahG2on/ZlWFhHtH5N4E71QSUnJjnrvnaYGhlVc1UjaE+ubwtoTj3645Zj2zMgZhkUavhwolfTqP6qRlhYT1Q5NvCGqsSyrKMUaKK193Muy+lWl+1qcT83xbQqgW0ccPvObWbRifnRnOSrxhih88uTJxqPeO0nHGVZx1SnSnng0GFIe2D+6/7DuVh4aOc2wSN2XA/3ts0TVt9HmyUQbChNv4jE85MBjUIn2WU5HdKdqPQbdlF8VXDiNQsMrw9NLE28A1F3aQA87PnvoDtU7DvrGnXmzAkQ7x96zKJJkA6CuUn8WP8MG+ozyULySxJMfgNY8l3/3klrloQDKkx+AXtTHQQGUPQA1DkABVCoA5QlAhQJQngBUKADlCUCFAlCeAFQoAOUJQIUCUJ4AVCgA5QlAhQJQngBUKADlCUCFAlCeAFQoAOUJQIUCUJ4AVCgA5QlAhQJQngBUKADlCUCFAlCeAFQoAOUJQIUCUJ4AVCgA5QlAhQJQngBUKADlCUCFAlCeAFQoAOUJQIUCUJ4AVCgA5QlAhQJQngBUKADlCUCFAlCeAFQoAOUJQIUCUJ4AVCgA5QlAhQJQngBUKADlCUCFAlCeAFQoAOUJQIUCUJ4AVCgA5QlAhQJQngBUKADlCUCFAlCeAFQoAOUJQIXKPKBN3mumZoZVXBXiuN7uCkfUR0bC6iOJY2QjJ1CGfzDYgwqFPSiAmgegxgEogEoFoDwBqFAAyhOACgWgPAGoUADKE4AKBaA8AahQAMoTgAoFoDwBqFAAyhOACgWgPAGoUADKE4AKBaA8AahQAMoTgAoFoDwBqFAAyhOACgWgPAGoUADKE4AKBaA8AahQAMoTgAoFoDwBqFAAyhOACgWgPAGoUADKE4AKBaA8AahQAMoTgAoFoDwBqFAAyhOACgWgPAGoUADKE4AKBaA8AahQAMoTgAoFoDwBqFAAypMfgNYuKRj3B+WZAMqUH4A+ZkV7QXkogPLkA6C1tk+rh+5QAGXKB0D3OkCtI7pTAZQnHwAN9LF95isPBVCe/AB0TffoPfyHykMBlCc/AA3sK1tbrT0TQHnyBVAcBwVQFwGocQAKoFIBKE8AKpQa0MPThkyrJ6ooGFYcTrIBUFcBqHEGQCOj3m9+7mUK5W8LTipLvAFQdwGocQZAt0wmajpGmycSrStMvAFQdwGocQZAV/zqsXueqqOVRUT7xyTeEJ3ZtGlT1QnvnaI6hlVcFSTtiSfOhNRHNjepj4w0Mixy6suBLu39QcNTT9DSYqLaoYk3RDWWZRUlXwOh86s5vk0BdHn0bvyTgbRifnRnOSrxhihUXV198pj36oljFVc1kPbEY40h9ZHNZ9RHRoIMi9R9OdD3o0Arh9Dm6EPRDYWJN/EYHnLgMahQF/Fj0KYhOyP/O49CwyvD00sTbwDUXQBqnMlx0B0Ft8+J7ml3jr1nUSTJBkBdBaDG4ZUkAJUKQHkCUKEAlCcAFQpAeQJQoQCUJwAVCkB5AlChAJQnXwB9+5FH12jPBFCe/AB0of1rx9rnvgFQnnwA9EgXG2gf3aEAypQPgFbizCIA6ib1u/hf2D4HKw8FUJ78AHSZDVT7WRKA8uQHoIHtr/5+t/ZMAOXJF0BxHBRAXQSgxgEogEoFoDwBqFAAyhOACgWgPPkB6OGRP79hovJMAGXKD0BvsY+D5ikPBVCefAD0YLbzUqfuUABlygdAN8Zeiz+sOxVAefIB0IDjM0d5KIDy5Aeg02ygzygPBVCe/AA0UFZw3/vaMwGUJ18AxXFQAHURgBoHoAAqFYDyBKBCAShPACoUgPIEoEIBKE/qQGvmdOv8yz2qI4+8PmnKCtWJAQDlSh3oE/ZR8xGqI5+2Ry5RHQmgXKkD7e288FipOLHWOXFDT8WJdgDKkzrQHg7QXYoT9+LEDQBqXqGNZaDqyJ72yNtVRwIoV+pAq8ZbVt5W1ZHvRH12L1cdCaBcpeEw09+Oak/cs2LFPu2ZAMoTjoMKBaA8AahQAMoTgAoFoDwBqFAAyhOACgWgPAGoUADKE4AKlXlAm7zXTM0Mq7gqxHG93RWOqI+MhNVHEsfIRk6gDP9gsAcVCntQADUPQI0DUACVCkB5AlChAJQnABUKQHkCUKEAlCcAFQpAeQJQoQCUJwAVCkB5AlChAJQnABUKQHkCUKEAlCcAFQpAeQJQoQCUJ/2Thz1+U5cHdE8eBqAAat5c/ZOHASiAmqd/8rAAgAKoebGTh+3UHQqgAGradNvnAOWhAAqgplWNtazBuicPA1AAddNR5TN1BgAUQN2E46DGASiASgWgPAGoUADKE4AKBaA8AahQAMoTgAoFoDwBqFAAyhOACgWgPAGoUGJAj78wi7aFAFQuADUuAdCq//xOFrX9r/0AKhaAGpcA6C15oUupuuOtACoWgBqXAOjl79OlRO9+E0DFAlDjEgD97lob6IrvAahYAGpcAqAjOx2/lD7+0b0AKhaAGpcA6IlO/5B19SV9GwBULAA1LuFx0PLFf/zEPU8ANQ5AjUsAtPmXdxLlPBAEULEA1LgEQKd850Wihf86AUDFAlDjEgD991fsP1/9FwAVC0CNSwD0qg32n+9fCaBiAahxCYAOuPk4UV2vvgAqFoAalwDokf/+p7btvvEfBwFULAA1LtFhpvCf58wqaXbvE0BNA1DjWgPdepC2xjtLXnB59I+KgmHF4SQbAHUVgBrXGmjWA5QV7yygRSOJQvnbgpPKEm8A1F0AalxroI3N1Bjv7z43josC3TyRaF1h4g2AugtAjfviY9CG3tWtHloeG1sRBbqyiGj/mMSb6P61urr65DHv1RPHKq5qIO2JxxpD6iObz6iPjAQZFqn7AlDq+sq5PiOFWw5EgS4tJqodmnhDVGNZVhEhxFzLk/WzgJa3e/Tt96K1fL18IdlAV8yP7ixHJd4Qndm0aVPVCe+dojqGVVwVJO2JJ86E1Ec2N6mPjDQyLHLqi0BbP0maN2jQgN6DTmyeTLQh+qgz0SYew0MOPAYV6uJ5DJooew8aGl4Znl6aeAOg7gJQ4xIADdMXsoHSzrH3LIok2QCoqwDUuNZA6+785mVdKlPuTpPHcH0AVKiLBei9/zxt7r/9JMFOFEAZA1DjWgP9bvRZzxtZnwKoaABqXGugl5QRBbPKAVQ0ADXuC6/Fl7f8AaByAahxAAqgUskA7ZCbm+v8kQugYgGoca2B9v97ACqWPtA9K98+oD0TJ7DlyQ9A/9Ldsn6xSXkogPLkB6C97M+vvV15KIDy5AOge50PALeUPyEUQHnyAdDazrbPnrpDAZQpHwAN5NpA71IeCqA8+QBobbYNtK3uUABlygdAt8Ueg9bqTgVQnnwANNDG9tlOeSiA8uQHoE/YQJcoDwVQnvwA9C9dLKsbDtQzXB8AFQkH6gHURbtfWfyB6kAcqAdQF621sRRrTsSBegB1UQ9nd3ZYc+ST9sQXNScGAJQrdaDOMR9rvebIGfbE+ZoTAwDKlTrQ6xygOxQnHnYm/kJxoh2A8qQOdLStpZvmxH14kgSg5h24y7J6bVEd2c/2OVJ1JIBylYbjoEeUXxUPbIg+Mbt1u/JQAOXJDwfqAwc/+KhGeyaA8uQLoBfNb3UCqEYAahyAAqhUAMoTgAoFoDwBqEy1BzhezQXQNAA9uPrdSuWR+TltxutOXNPLsu4/5HkZANUHuiP6o7t5perI9vaB+h6aEw85b4mZ63kdANUHeq/9o+uueaz+YOylTsWJgfeciYM9rwOg+kC7qr9Z5NUY0IOKIz90JuZ7XgdA9YHe5vzsPtMcqb8HrR1sT3zZ8zoAqg/0NftH97DqyBvtkb1VR+68v1vuIu/LAGgansUvv/++xapvqA8ERrdtO1V3Io6DcoXjoEIBKE8AKhSA8gSgQgEoTwAqFIDy5A+gp06pj8w8oE3ea6ZmhlVcFeK43u4KR5QH1oy1rCnHlYdSmGGRRk6gDP9gsAcVaaR9HHSy8tDM24MyXB8AlajaeSGpC37t2HsAKlEMaFcA9R6AiuScK2Ka8lAA5ckPQPfYT5KqlIcCKE9+APrpBOvGBwGU4foAqEij7Lt47XeLAChPPgCahnfUBwCUKx8AxSnAAdRV2kDnxYAqf2I8gPLkA6C7cRcPoG7SBnoEQAHUTX9TfjS4B49BAdS8qrGWNXir5sSNlv4HiwAoV+pAp9tY+mtOfAV38QBqXidHy07Fibdb6ueKCAAoV2n6GJq/ao7EHhRAzbvB0VKhOTLHnpijOTHw1/s69fy196dlAKoP9D7n5GGaT6lrnH8SNyhODNT25fn0RQDVB7qzp2XduEpz4n79w0ybnIl9PK8DoPpAF9s/ugmaE1/Tf6mzxJnY3vM6AKoPtL362e3e0H+SVOZMvMnzOgCqDzTb+dm9oznSmZitOfFgN3vkY57XAdB0AVX9YMKH7ZlLNCcGym6xrHE4Rz1D6kA7O0A/1R16SP3/a01lNcMqAKoPNI/n6YOb9k7u2vURzTOA2+FAPU/qQG929qB7NEeOsyfO0JwYAFCu1IG2cYDuUpx4yJl4o+JEOwDlSR1o7JjPBsWJVc7Etng/qPf8ADT2LH6z4sRKvGEZQM2LadF8x/JhS//NIgDKVZr2oO8pTtwV+zeh+eF2AQDlSh1ojvqB+ircxQOoeder784qsAcFUPNid/GrFSfW4B31AGpetvqvfGzHHhRAzYv9TtI2xYnYg17AQCsmjXxWd2IHR4v3N/qY91FagAYBlKH19guPA1VHxu7iP1acODkGtFJxZGBlRytnWI3nZXwP9NY0vXvY+pP+SM2Jn7W1JxZ4Xsf3QGP3t3M1R6Zhd9ZW/R1+rzs38nrP6/geaG/nf+RKzZGxu/gPNUcGJmVnF6kOfMa5kW08r+N7oKvs/4+9VUfG9qCvqc4MjJikO6/UuZEdPa/je6CBD0fnPap7gDAGdL7qTHWgh5xfmpvneR0ATde7mVQfVegDDayPPv2cqvMsfmPBkIeOEFUUDCsOJ9kAqItiQBfoDlUHGgjUHmVYxABo7cDdwQUzKJS/LTipLPEGQN0UA/o73aFpAKr1SlLZbKLPhtDmiUTrChNvANRNMaBbdIdexECD9USrH6KVRUT7xyTeAKibYoeZPtEdqg60anLP20q8L2P2JGnt8J20tDh6bz808YbIfjtCUco1UEuxPehq3aF3T9adF3EOMJd4Xqc5vk0FtG7WuP1EK+ZHd5ajEm+IGkpKSnbUe+80NTCs4qpGUh4YA/qe7tAR/6M7L/a5DR09r9Pw5UCbxi+KRDebo/8ENxQm3sTzvkP3xV18DOhzukO17+KfdG6k99/TM7iLXzPF2YSGV4anlybeAKibYkCVP5dQG2jsjI/XeV7HAOiiXtHyiHaOvcfelSbcAKiLZtg/ulzlodpAq9vZt9L7ULySlIZPmlvWvs1T2jPVn8UvzrGsbt7vJgA0HR+FOHOA+kj11+Jvsveg3v8dAiiAirTWeQzaxfM6AAqgIv0G7wflasW92hP9AHSJ3rN4BqB7tppWcWCH8WWZfmniRe2TavkCaKVzgp+hntfRATrCkuhBz7feCUAlqnFO8DPd8zo6QHuJAL3T8613AlCJVjo/Iu8nddYBWnyvaQUTCowv+7rnW+8EoBK95ABt53kdPEkCUJH2OI9BB3leB0ABVKb5baL38Ls9LwOgACrUnhKOM0wCKIAK9UnZeoZf5wZQAJVpafQh6ADvh6oBFEBFOuA8i3/I8zoACqAirXGA9vS8DoACqEjOOa+szp7XAVAAFen/HKAdPK8DoAAq0tsO0E6e1wFQABVpiwP0Ds/rXKxAlww27pa25pcdXM1y7XwA9MhdNtA3Pa9zsQKdd/10ge60qliunQ+ABjZ2zm4z2vsyFy3Qzhw3qHVvAahpNc7J/2d6XgdA3ZQS6McfGDcx1/yyTGfBS8/7QXEK8GSlAegEkXdlWzez/P9QB1rsXHmVU9+Yx3C7LmSgAz8UaOoFCvS3DtBsz+sAqJtSA71LYmTRBQp0MfagKQPQVmkDfdMB2tbzOgDqpkwD+suBxnXsbH7ZGQw/ADxJSt289i8JNDnDgPbr+7BAPe5m+AHEPmAZv5OUrHltZJ5TpwLaq1igu7qluJX9ZnP82Fo3gQPobud/V1fP6wAoH1CZkanOv5XBQB+NXXvP61y0QNv/SaCZAGpadwBNWTqeJPVbIdD4m1LcygwG2hdAU+aPZ/EZDHQEgKYMQM8/FqDZAJoyAD3/WIDmAGjKAPT8YwHaH0BTBqDnHwvQRwA0ZQB6/rEAfQ5AUwag5x8L0AcANGXzfr5IoIkpgfZ9W6AJFyjQfMcn3g+arAXtjWuXY37Z9pn1jvoMBvoY9qBccf1efFWlcdP6m192X4qRudk5AlkcQCscn/icJIYu4BM35MrstEcwXLUpmbgHDXrvDDUyrOKq3+ZoTww+MpBnnb4d+gh0wyiGq9Y7BtT7QpxAj3mvnk4yrOKqF3O0Jx6bOYBnHanHoAxXbUwMqOd16uJXCnfxmnHdxWfwk6S2mXgXz3C7ANRNGQz0OgDlCkBbxQL0SQDlCkBbxQJ0GIByBaCtwmPQFOHz4t2UwUDbAShXpziut7t8APQWAOUKQFvFAnQ5gHIFoK1iARroaPtc4nkZAAXQ1vEArZmVc/M73pcB0Asa6GiJt6DmsQANBLosYFgEQC9ooAJvZYoGoMkDUDftN39baf4E88vyfFIEgDJ1AQN1kf7nxQMoUwAqFIDyBKBCAShPACoUgPIEoEIBKE8AKhSA8qQP9GDv9tu1Z3IBfdO8DhPNL7sp2TwA1Qe6yD4Ynq88lAtojsxrA0k/dRZA9YE6P5Hsg7pD2YAu5Fnn3HoBaPLUgcZOPvyo7lA2oK9wSGldLoAmLz17UOst3aEASgBqWGwPeqHexee0Feg6AE2eOtDY8wyG90q6iQtotshzpLYAmjx1oO2dnwnTW4ZMY9uDduol0M8BNHnqQJ+1fY5SHorHoASgpi27I+9Z7ZlsQJ/cIVAPAE1eGl7qDDarj8SBegA17wIGut68Gx82v+xfk80DUJ8AXfWe+ki8WYQnfwBtalQfCaA8AahQAMoTgAoFoDwBqFAAyhOACgWgPAGoUADKE4AKBaA8AahQAMoTgAoVbmBYBEABVCoA5QlAhQJQngBUqIwAWlEwrDgMoC4DUOM8Ag3lbwtOKgNQlwGocR6Bbp5ItK4QQF0GoMZ5BLqyiGj/GAB1GYAa5xHo0mKi2qHRv9R26tTp+QhDxLFIpo8kf4zkWKTJG9AV86N70FHRv9QVFRWtP+29RgoyrOKqJtKeeLo5rD4yHFIfGWnmWMUb0M2TiTYUtnzFsEfHXbxQPr2LDw2vDE8vBVCXAahxXo+D7hx7z6IIgLoMQI3DK0kAKhWA8gSgQgEoTwAqFIDyBKBCAShPACoUgPIEoEJlHlCGDhQd1x65dYH2RFolcpLNlJWsVB9ZvIlxsUwButE6oD3ydznaE2n2QPWRd09WH9nlecbFAFQzAHUdgGoGoK7LFKCN1c3aI+urtSfS8Vr1kUf+pj7y0Mkvv4xxmQIUoYQBKMro0gY0uPysLyJz5Af+KT/v8aDuyI0FQx46ojvSbn3TWV9oDU0Qy+i0AS0aedYX4X7i8/bmB+qnvqo6snbg7uCCGaoj7aoHNpz1ldLQRLGMThfQjeNiQENPD719GT3S+35aPXL400EqnVMwuPBY/NucbXiJ6M2nVUeWzSb6bIjqyGhz+veKAU0ylLG9U2ffMbWS4uu3fMU7Ok1Aj42tiAFdPbGxql8w+m/t4NDq0JyXqLT3R6GFj8a/zTvzxNYJ76uODNZHhz2kOtKpXwxokqGM7e21OrLwyZb1418xj04P0EjhlgMxoFtG7Yo4dwZv/JqocgyVTiFq6BuJfZu3TWNG1yiPpLXDd2qP/BxokqGMg/beFqKPZrasH/+KeXR6gC5fSHGg4Zfzh75s35RFJUR1g6j0qeg3Bx2PfZu7Nwp1R9bNGrefdEfaxYEmGco4aO8Eoq0zW9aPf/X26NEfMY5OD9B5gwYN6D3oRPRvgRNUOeKT6E354/NE+0ZT6VSig31CsW9zjvzju0Q77ybNkU3jW35tS22kUxxokqGMg+Ik4+vHv2IenbZn8fE96NJH6upHbg/nRj67vSb0xOLoo5XtkYWz4t/mnLd2/KFTT85THblmSsvf1EY6xYEmGcpYnGR8/bOAMo5ON9BTDw8etoRo+hhaNfKOedHnezOmDZ12tOXbnL1219DH6lRHLrI/ET1PdaRTHGiSoYy1kIytfxZQxtGZ9kpS6XyMvJiGeh4NoD4ZCaA8BfZh5MU01PPoTAOK0DkBKMroABRldACKMjoAZapnVqyeLd84Uv/5fwtllX/+98jzP7v8R3lbz70AShqAMrWrvPyVrCXl5btavnHD3M//29lA53x92po1I6/cfs4FUNIAlK+KrK1nfZUE6LWF9p+dBgGoWQDKVwzo0aFXX5MXoOysrO60p8+3L++49RygVzrvYN71UewC8QuXX1V8zeWdPyZa9tN//MG8dF3/jAxA+XKARnLalJW1yYntIH/cqXRVh5xzgE7Lajd3i/Mmp+gFWi5c/pVrXl97y1UnD1w2+YPHszak7RZkYADKlwO07KsHiPZ/dY3jb+5eoiVXnQOUVgz/btZVE+odoC0XLs/6A9Hpbxe9e8mnRMv3p+8mZF4AypcD9Nkf2n+99tfOHjT4+wf7XdEKaLTds7/R3QHacuHyLPutPrmjTl//tdyiKv1rnsEBKF8O0Gcccz9cYPur/2n242+9eA7Qiv7O7wQ/lVVnX6DlwjGg/UZQZN20n132RlqufYYGoHw5QFdd+hlR1aVltr9llx0jevkcoFWXvGVviq6I2BdouXB5Vkl0d3vNU6W/iv63Prem7RZkYADKV+xJUvb17627PjtCHe49vj7rhaqS7389cPZd/Pivz3xn9dzLHyH7Ai0XLs/63psb+3zr+KqvzK9YesXsNN6GjAtA+YodZgoM+c7VeQGiF67sS7Ov/lb/XT/OOecx6Asdv3VFTnEkdoH4hcuz/vyTy2+sIHr62q99f4r6adQyOQDNhMqzOH+X7aIKQDMhAE0agKq0tmu8xL8Gv+UHAJokAEUZHYCijA5AUUYHoCijA1CU0QEoyugAFGV0AIoyuv8H69DJ73132zQAAAAASUVORK5CYII=" /><!-- --></p>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb39"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>  plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>,<span class="dv">8</span>))</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  sns.boxplot(x<span class="op">=</span><span class="st">&#39;Total_Stops&#39;</span>,y<span class="op">=</span><span class="st">&#39;Price&#39;</span>,data<span class="op">=</span>df.sort_values(<span class="st">&#39;Price&#39;</span>,ascending<span class="op">=</span><span class="va">False</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>  plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>,<span class="dv">8</span>))</span>
+<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a>  sns.boxplot(x<span class="op">=</span><span class="st">&#39;Total_Stops&#39;</span>,y<span class="op">=</span><span class="st">&#39;Price&#39;</span>,data<span class="op">=</span>df.sort_values(<span class="st">&#39;Price&#39;</span>,ascending<span class="op">=</span><span class="va">False</span>))</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>Airline <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">model.matrix</span>(<span class="sc">~</span> Airline <span class="sc">-</span> <span class="dv">1</span>, <span class="at">data =</span> categorical))</span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>new_names <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;Airline&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="fu">colnames</span>(Airline))</span>
+<span id="cb96-3"><a href="#cb96-3" aria-hidden="true" tabindex="-1"></a>Airline <span class="ot">&lt;-</span> <span class="fu">setNames</span>(Airline, new_names)</span></code></pre></div>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb40"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>  <span class="co"># As Airline is Nominal Categorical data we will perform OneHotEncoding</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  Airline<span class="op">=</span>pd.get_dummies(categorical[<span class="st">&#39;Airline&#39;</span>],drop_first<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>  <span class="co"># As Airline is Nominal Categorical data we will perform OneHotEncoding</span></span>
+<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a>  Airline<span class="op">=</span>pd.get_dummies(categorical[<span class="st">&#39;Airline&#39;</span>],drop_first<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Airline)</span></code></pre></div>
+<pre><code>##   Air Asia Air India GoAir IndiGo Jet Airways Jet Airways Business
+## 1        0         0     0      1           0                    0
+## 2        0         1     0      0           0                    0
+## 3        0         0     0      0           1                    0
+## 4        0         0     0      1           0                    0
+## 5        0         0     0      1           0                    0
+## 6        0         0     0      0           0                    0
+##   Multiple carriers Multiple carriers Premium economy SpiceJet Trujet Vistara
+## 1                 0                                 0        0      0       0
+## 2                 0                                 0        0      0       0
+## 3                 0                                 0        0      0       0
+## 4                 0                                 0        0      0       0
+## 5                 0                                 0        0      0       0
+## 6                 0                                 0        1      0       0
+##   Vistara Premium economy
+## 1                       0
+## 2                       0
+## 3                       0
+## 4                       0
+## 5                       0
+## 6                       0</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb41"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>  Airline.head()</span></code></pre></div>
+<div class="sourceCode" id="cb100"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>  Airline.head()</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(categorical<span class="sc">$</span>Source)</span></code></pre></div>
+<pre><code>## 
+## Banglore  Chennai    Delhi  Kolkata   Mumbai 
+##     2197      381     4536     2871      697</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb42"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Source&#39;</span>].value_counts()</span></code></pre></div>
+<div class="sourceCode" id="cb103"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Source&#39;</span>].value_counts()</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> df, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(Source, <span class="sc">-</span>Price), <span class="at">y =</span> Price)) <span class="sc">+</span></span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Source&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Price&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb43"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Source vs Price</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>,<span class="dv">15</span>))</span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  sns.catplot(x<span class="op">=</span><span class="st">&#39;Source&#39;</span>,y<span class="op">=</span><span class="st">&#39;Price&#39;</span>,data<span class="op">=</span>df.sort_values(<span class="st">&#39;Price&#39;</span>,ascending<span class="op">=</span><span class="va">False</span>),kind<span class="op">=</span><span class="st">&#39;boxen&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb105"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Source vs Price</span></span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a>  plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>,<span class="dv">15</span>))</span>
+<span id="cb105-3"><a href="#cb105-3" aria-hidden="true" tabindex="-1"></a>  sns.catplot(x<span class="op">=</span><span class="st">&#39;Source&#39;</span>,y<span class="op">=</span><span class="st">&#39;Price&#39;</span>,data<span class="op">=</span>df.sort_values(<span class="st">&#39;Price&#39;</span>,ascending<span class="op">=</span><span class="va">False</span>),kind<span class="op">=</span><span class="st">&#39;boxen&#39;</span>)</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>Source <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">model.matrix</span>(<span class="sc">~</span> Source <span class="sc">-</span> <span class="dv">1</span>, <span class="at">data =</span> categorical))</span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>new_names <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;Source&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="fu">colnames</span>(Source))</span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a>Source <span class="ot">&lt;-</span> <span class="fu">setNames</span>(Source, new_names)</span>
+<span id="cb106-4"><a href="#cb106-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb106-5"><a href="#cb106-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Source)</span></code></pre></div>
+<pre><code>##   Banglore Chennai Delhi Kolkata Mumbai
+## 1        1       0     0       0      0
+## 2        0       0     0       1      0
+## 3        0       0     1       0      0
+## 4        0       0     0       1      0
+## 5        1       0     0       0      0
+## 6        0       0     0       1      0</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb44"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#encoding of source column</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  source<span class="op">=</span>pd.get_dummies(categorical[<span class="st">&#39;Source&#39;</span>],drop_first<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  source.head()</span></code></pre></div>
+<div class="sourceCode" id="cb108"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#encoding of source column</span></span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a>  source<span class="op">=</span>pd.get_dummies(categorical[<span class="st">&#39;Source&#39;</span>],drop_first<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a>  source.head()</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(categorical<span class="sc">$</span>Destination)</span></code></pre></div>
+<pre><code>## 
+##  Banglore    Cochin     Delhi Hyderabad   Kolkata New Delhi 
+##      2871      4536      1265       697       381       932</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb45"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Destination&#39;</span>].value_counts()</span></code></pre></div>
+<div class="sourceCode" id="cb111"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Destination&#39;</span>].value_counts()</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> df, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(Destination, <span class="sc">-</span>Price), <span class="at">y =</span> Price)) <span class="sc">+</span></span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Destination&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Price&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb46"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>  plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>,<span class="dv">8</span>))</span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  sns.boxplot(x<span class="op">=</span><span class="st">&#39;Destination&#39;</span>,y<span class="op">=</span><span class="st">&#39;Price&#39;</span>,data<span class="op">=</span>df.sort_values(<span class="st">&#39;Price&#39;</span>,ascending<span class="op">=</span><span class="va">False</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb113"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a>  plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>,<span class="dv">8</span>))</span>
+<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a>  sns.boxplot(x<span class="op">=</span><span class="st">&#39;Destination&#39;</span>,y<span class="op">=</span><span class="st">&#39;Price&#39;</span>,data<span class="op">=</span>df.sort_values(<span class="st">&#39;Price&#39;</span>,ascending<span class="op">=</span><span class="va">False</span>))</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>Destination <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">model.matrix</span>(<span class="sc">~</span> Destination <span class="sc">-</span> <span class="dv">1</span>, <span class="at">data =</span> categorical))</span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a>new_names <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;Destination&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="fu">colnames</span>(Destination))</span>
+<span id="cb114-3"><a href="#cb114-3" aria-hidden="true" tabindex="-1"></a>Destination <span class="ot">&lt;-</span> <span class="fu">setNames</span>(Destination, new_names)</span>
+<span id="cb114-4"><a href="#cb114-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb114-5"><a href="#cb114-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Destination)</span></code></pre></div>
+<pre><code>##   Banglore Cochin Delhi Hyderabad Kolkata New Delhi
+## 1        0      0     0         0       0         1
+## 2        1      0     0         0       0         0
+## 3        0      1     0         0       0         0
+## 4        1      0     0         0       0         0
+## 5        0      0     0         0       0         1
+## 6        1      0     0         0       0         0</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb47"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#encoding of destination column</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  destination<span class="op">=</span>pd.get_dummies(categorical[<span class="st">&#39;Destination&#39;</span>],drop_first<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  destination.head()</span></code></pre></div>
+<div class="sourceCode" id="cb116"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#encoding of destination column</span></span>
+<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a>  destination<span class="op">=</span>pd.get_dummies(categorical[<span class="st">&#39;Destination&#39;</span>],drop_first<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb116-3"><a href="#cb116-3" aria-hidden="true" tabindex="-1"></a>  destination.head()</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(categorical<span class="sc">$</span>Route)</span></code></pre></div>
+<pre><code>## 
+##                   BLR → AMD → DEL                   BLR → BBI → DEL 
+##                                18                                 5 
+##                   BLR → BDQ → DEL             BLR → BOM → AMD → DEL 
+##                                 8                                 5 
+##             BLR → BOM → BHO → DEL                   BLR → BOM → DEL 
+##                                11                               402 
+##             BLR → BOM → IDR → DEL       BLR → BOM → IDR → GWL → DEL 
+##                                 5                                 2 
+##             BLR → BOM → IXC → DEL             BLR → BOM → JDH → DEL 
+##                                 1                                 6 
+##             BLR → BOM → NAG → DEL             BLR → BOM → UDR → DEL 
+##                                10                                 3 
+##             BLR → CCU → BBI → DEL       BLR → CCU → BBI → HYD → DEL 
+##                                 5                                 2 
+## BLR → CCU → BBI → HYD → VGA → DEL                   BLR → CCU → DEL 
+##                                 1                                11 
+##             BLR → CCU → GAU → DEL                   BLR → COK → DEL 
+##                                11                                15 
+##                         BLR → DEL                   BLR → GAU → DEL 
+##                              1552                                 3 
+##                   BLR → GOI → DEL       BLR → HBX → BOM → AMD → DEL 
+##                                 7                                 1 
+##       BLR → HBX → BOM → BHO → DEL       BLR → HBX → BOM → NAG → DEL 
+##                                 1                                 1 
+##                   BLR → HYD → DEL             BLR → HYD → VGA → DEL 
+##                                37                                10 
+##                   BLR → IDR → DEL                   BLR → LKO → DEL 
+##                                 5                                 3 
+##                   BLR → MAA → DEL                   BLR → NAG → DEL 
+##                                29                                 3 
+##                   BLR → PNQ → DEL                   BLR → STV → DEL 
+##                                 5                                 2 
+##             BLR → TRV → COK → DEL                   BLR → VGA → DEL 
+##                                 2                                 9 
+##             BLR → VGA → HYD → DEL             BLR → VGA → VTZ → DEL 
+##                                 4                                 2 
+##             BOM → AMD → ISK → HYD                   BOM → BBI → HYD 
+##                                 4                                 1 
+##             BOM → BDQ → DEL → HYD             BOM → BHO → DEL → HYD 
+##                                 2                                 7 
+##       BOM → BLR → CCU → BBI → HYD                   BOM → BLR → HYD 
+##                                 1                                 3 
+##                   BOM → CCU → HYD             BOM → COK → MAA → HYD 
+##                                 1                                 1 
+##             BOM → DED → DEL → HYD                   BOM → DEL → HYD 
+##                                 1                                33 
+##                   BOM → GOI → HYD             BOM → GOI → PNQ → HYD 
+##                                 1                                 6 
+##                         BOM → HYD             BOM → IDR → DEL → HYD 
+##                               621                                 2 
+##             BOM → JAI → DEL → HYD             BOM → JDH → DEL → HYD 
+##                                 1                                 3 
+##       BOM → JDH → JAI → DEL → HYD                   BOM → JLR → HYD 
+##                                 1                                 1 
+##                   BOM → MAA → HYD                   BOM → NDC → HYD 
+##                                 3                                 1 
+##             BOM → RPR → VTZ → HYD             BOM → UDR → DEL → HYD 
+##                                 1                                 1 
+##             BOM → VNS → DEL → HYD                   CCU → AMD → BLR 
+##                                 1                                11 
+##                   CCU → BBI → BLR             CCU → BBI → BOM → BLR 
+##                                50                                42 
+##             CCU → BBI → HYD → BLR       CCU → BBI → IXR → DEL → BLR 
+##                                 9                                 2 
+##                         CCU → BLR             CCU → BOM → AMD → BLR 
+##                               724                                 9 
+##                   CCU → BOM → BLR             CCU → BOM → COK → BLR 
+##                               979                                30 
+##             CCU → BOM → GOI → BLR             CCU → BOM → HBX → BLR 
+##                                16                                 6 
+##             CCU → BOM → PNQ → BLR             CCU → BOM → TRV → BLR 
+##                                 4                                 2 
+##             CCU → DEL → AMD → BLR                   CCU → DEL → BLR 
+##                                21                               565 
+##             CCU → DEL → COK → BLR       CCU → DEL → COK → TRV → BLR 
+##                                36                                 4 
+##             CCU → DEL → VGA → BLR                   CCU → GAU → BLR 
+##                                 4                                41 
+##             CCU → GAU → DEL → BLR       CCU → GAU → IMF → DEL → BLR 
+##                                39                                 5 
+##                   CCU → HYD → BLR                   CCU → IXA → BLR 
+##                                53                                 1 
+##                   CCU → IXB → BLR             CCU → IXB → DEL → BLR 
+##                                20                                 1 
+##             CCU → IXR → BBI → BLR             CCU → IXR → DEL → BLR 
+##                                 6                                46 
+##             CCU → IXZ → MAA → BLR             CCU → JAI → BOM → BLR 
+##                                 1                                13 
+##             CCU → JAI → DEL → BLR                   CCU → KNU → BLR 
+##                                 6                                10 
+##                   CCU → MAA → BLR                   CCU → NAG → BLR 
+##                                65                                 9 
+##                   CCU → PAT → BLR                   CCU → PNQ → BLR 
+##                                10                                19 
+##             CCU → RPR → HYD → BLR             CCU → VNS → DEL → BLR 
+##                                 1                                10 
+##                   CCU → VTZ → BLR             DEL → AMD → BOM → COK 
+##                                 1                               205 
+##                   DEL → AMD → COK             DEL → ATQ → BOM → COK 
+##                                25                                40 
+##                   DEL → BBI → COK             DEL → BDQ → BOM → COK 
+##                                 5                                28 
+##             DEL → BHO → BOM → COK                   DEL → BLR → COK 
+##                                50                               232 
+##                   DEL → BOM → COK             DEL → CCU → BOM → COK 
+##                              2376                                44 
+##                         DEL → COK             DEL → DED → BOM → COK 
+##                               213                                 2 
+##             DEL → GOI → BOM → COK       DEL → GWL → IDR → BOM → COK 
+##                                58                                 8 
+##             DEL → HYD → BOM → COK                   DEL → HYD → COK 
+##                                56                               326 
+##             DEL → HYD → MAA → COK             DEL → IDR → BOM → COK 
+##                                83                                99 
+##             DEL → IXC → BOM → COK             DEL → IXU → BOM → COK 
+##                                13                                12 
+##             DEL → JAI → BOM → COK             DEL → JDH → BOM → COK 
+##                               240                                37 
+##             DEL → LKO → BOM → COK                   DEL → LKO → COK 
+##                                41                                17 
+##             DEL → MAA → BOM → COK                   DEL → MAA → COK 
+##                                16                               146 
+##             DEL → NAG → BOM → COK                   DEL → PNQ → COK 
+##                                71                                42 
+##       DEL → RPR → NAG → BOM → COK                   DEL → TRV → COK 
+##                                17                                16 
+##             DEL → UDR → BOM → COK                         MAA → CCU 
+##                                18                               381</code></pre>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb48"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>  <span class="co"># now work on route column</span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Route&#39;</span>].value_counts()</span></code></pre></div>
+<div class="sourceCode" id="cb119"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a>  <span class="co"># now work on route column</span></span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Route&#39;</span>].value_counts()</span></code></pre></div>
 </details>
+<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>categorical<span class="sc">$</span>Route1 <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">strsplit</span>(<span class="fu">as.character</span>(categorical<span class="sc">$</span>Route), <span class="st">&quot;→&quot;</span>), <span class="st">&quot;[&quot;</span>, <span class="dv">1</span>)</span>
+<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a>categorical<span class="sc">$</span>Route2 <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">strsplit</span>(<span class="fu">as.character</span>(categorical<span class="sc">$</span>Route), <span class="st">&quot;→&quot;</span>), <span class="st">&quot;[&quot;</span>, <span class="dv">2</span>)</span>
+<span id="cb120-3"><a href="#cb120-3" aria-hidden="true" tabindex="-1"></a>categorical<span class="sc">$</span>Route3 <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">strsplit</span>(<span class="fu">as.character</span>(categorical<span class="sc">$</span>Route), <span class="st">&quot;→&quot;</span>), <span class="st">&quot;[&quot;</span>, <span class="dv">3</span>)</span>
+<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a>categorical<span class="sc">$</span>Route4 <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">strsplit</span>(<span class="fu">as.character</span>(categorical<span class="sc">$</span>Route), <span class="st">&quot;→&quot;</span>), <span class="st">&quot;[&quot;</span>, <span class="dv">4</span>)</span>
+<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a>categorical<span class="sc">$</span>Route5 <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">strsplit</span>(<span class="fu">as.character</span>(categorical<span class="sc">$</span>Route), <span class="st">&quot;→&quot;</span>), <span class="st">&quot;[&quot;</span>, <span class="dv">5</span>)</span></code></pre></div>
 <details>
 <summary>
 Click to show Python code
 </summary>
-<div class="sourceCode" id="cb49"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Route1&#39;</span>]<span class="op">=</span>categorical[<span class="st">&#39;Route&#39;</span>].<span class="bu">str</span>.split(<span class="st">&#39;→&#39;</span>).<span class="bu">str</span>[<span class="dv">0</span>]</span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Route2&#39;</span>]<span class="op">=</span>categorical[<span class="st">&#39;Route&#39;</span>].<span class="bu">str</span>.split(<span class="st">&#39;→&#39;</span>).<span class="bu">str</span>[<span class="dv">1</span>]</span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Route3&#39;</span>]<span class="op">=</span>categorical[<span class="st">&#39;Route&#39;</span>].<span class="bu">str</span>.split(<span class="st">&#39;→&#39;</span>).<span class="bu">str</span>[<span class="dv">2</span>]</span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Route4&#39;</span>]<span class="op">=</span>categorical[<span class="st">&#39;Route&#39;</span>].<span class="bu">str</span>.split(<span class="st">&#39;→&#39;</span>).<span class="bu">str</span>[<span class="dv">3</span>]</span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Route5&#39;</span>]<span class="op">=</span>categorical[<span class="st">&#39;Route&#39;</span>].<span class="bu">str</span>.split(<span class="st">&#39;→&#39;</span>).<span class="bu">str</span>[<span class="dv">4</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb121"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Route1&#39;</span>]<span class="op">=</span>categorical[<span class="st">&#39;Route&#39;</span>].<span class="bu">str</span>.split(<span class="st">&#39;→&#39;</span>).<span class="bu">str</span>[<span class="dv">0</span>]</span>
+<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Route2&#39;</span>]<span class="op">=</span>categorical[<span class="st">&#39;Route&#39;</span>].<span class="bu">str</span>.split(<span class="st">&#39;→&#39;</span>).<span class="bu">str</span>[<span class="dv">1</span>]</span>
+<span id="cb121-3"><a href="#cb121-3" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Route3&#39;</span>]<span class="op">=</span>categorical[<span class="st">&#39;Route&#39;</span>].<span class="bu">str</span>.split(<span class="st">&#39;→&#39;</span>).<span class="bu">str</span>[<span class="dv">2</span>]</span>
+<span id="cb121-4"><a href="#cb121-4" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Route4&#39;</span>]<span class="op">=</span>categorical[<span class="st">&#39;Route&#39;</span>].<span class="bu">str</span>.split(<span class="st">&#39;→&#39;</span>).<span class="bu">str</span>[<span class="dv">3</span>]</span>
+<span id="cb121-5"><a href="#cb121-5" aria-hidden="true" tabindex="-1"></a>  categorical[<span class="st">&#39;Route5&#39;</span>]<span class="op">=</span>categorical[<span class="st">&#39;Route&#39;</span>].<span class="bu">str</span>.split(<span class="st">&#39;→&#39;</span>).<span class="bu">str</span>[<span class="dv">4</span>]</span></code></pre></div>
 </details>
 </div>
 </div>
