@@ -20,7 +20,8 @@ details[open] {
 }
 details summary {
   cursor: pointer;
-  font-weight: bold;
+  font-weight: normal;
+  font-style: italic;
 }
 </style>
 
@@ -28,7 +29,12 @@ details summary {
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This is the final project for the Reproducible Research course.
+This is an RMarkdown presentation that serves as a final project for the course Reproducible Research.\
+The project's topic involves transcribing a ready-made [Python notebook](https://www.kaggle.com/code/anshigupta01/flight-price-prediction/notebook?fbclid=IwAR2vtpE8xwc7nhPqDwdEiwwImw62_XuIxTgEkG0Qo2OCCyHIONRIv7DD3pM), downloaded from the Kaggle platform, into R.\
+Additionally, the analysis will be expanded to include an additional machine learning model.\
+In order to make this project reproducible, we utilize the `dotenv` package to store the environment state.
+
+Please note that under each cell, there is a button available to expand the rewritten Python code.
 
 Team members:
 
@@ -37,16 +43,15 @@ Team members:
 - Karolina Szczęsna
 
 ```{r}
-library(tidyverse)
+suppressPackageStartupMessages(library(tidyverse))
 library(readxl)
 library(dplyr)
 library(ggplot2)
 #library(caret)
 #library(gridExtra)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   #importing libraries
   import pandas as pd 
@@ -68,9 +73,8 @@ library(ggplot2)
 df <- read_excel('data/Data_Train.xlsx')
 head(df)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df=pd.read_excel('/kaggle/input/flight-fare-prediction-mh/Data_Train.xlsx')
   df.head()
@@ -80,9 +84,8 @@ head(df)
 ```{r}
 str(df)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df.info()
   ```
@@ -91,9 +94,8 @@ str(df)
 ```{r}
 summary(df)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df.describe()
   ```
@@ -102,9 +104,8 @@ summary(df)
 ```{r}
 dim(df)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df.shape
   ```
@@ -114,9 +115,8 @@ dim(df)
 df %>% 
   summarise_all(~sum(is.na(.)))
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df.isnull().sum()
   ```
@@ -130,9 +130,8 @@ df %>%
   geom_bar(stat = 'identity', fill = 'steelblue') +
   labs(x = 'Column', y = 'No. of NAs')
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   import missingno as msno
   msno.bar(df)
@@ -143,9 +142,8 @@ df %>%
 ```{r}
 df <- df %>% drop_na()
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df.dropna(inplace=True)
   ```
@@ -154,9 +152,8 @@ df <- df %>% drop_na()
 ```{r}
 df %>% summarise_all(~sum(is.na(.)))
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df.isnull().sum()
   ```
@@ -167,9 +164,8 @@ df %>% summarise_all(~sum(is.na(.)))
 ```{r}
 glimpse(df)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df.dtypes 
   ```
@@ -178,22 +174,20 @@ glimpse(df)
 ```{r}
 names(df)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df.columns
   ```
 </details>
 
 ```{r}
-df$Date_of_Journey <- as.POSIXct(df$Date_of_Journey, format = "%d/%m/%Y")
-df$Dep_Time <- as.POSIXct(df$Dep_Time, format = "%H:%M")
-df$Arrival_Time <- as.POSIXct(df$Arrival_Time, format = "%H:%M")
+df$Date_of_Journey <- as.POSIXct(df$Date_of_Journey, format="%d/%m/%Y")
+df$Dep_Time <- as.POSIXct(df$Dep_Time, format="%H:%M")
+df$Arrival_Time <- as.POSIXct(df$Arrival_Time, format="%H:%M")
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   def change_into_datetime(col):
       df[col]=pd.to_datetime(df[col])
@@ -206,21 +200,19 @@ df$Arrival_Time <- as.POSIXct(df$Arrival_Time, format = "%H:%M")
 ```{r}
 glimpse(df)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df.dtypes
   ```
 </details>
 
 ```{r}
-df$journey_day <- as.numeric(format(df$Date_of_Journey, "%d"))
-df$journey_month <- as.numeric(format(df$Date_of_Journey, "%m"))
+df$journey_day <- as.numeric(format(df$Date_of_Journey, "%d")) # extract day from Date_of_Journey `column`
+df$journey_month <- as.numeric(format(df$Date_of_Journey, "%m")) # extract month from Date_of_Journey `column`
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df['journey_day']=df['Date_of_Journey'].dt.day
   df['journey_month']=df['Date_of_Journey'].dt.month
@@ -230,44 +222,48 @@ df$journey_month <- as.numeric(format(df$Date_of_Journey, "%m"))
 ```{r}
 head(df, 10)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df.head(10)
   ```
 </details>
 
 ```{r}
-df <- df %>% select(-Date_of_Journey)
+df <- df %>% select(-Date_of_Journey) # remove Date_of_Journey column
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df.drop('Date_of_Journey', axis=1, inplace=True)
   ```
 </details>
 
 ```{r}
+# extract hour and add a new column with the extracted hour values to the data frame
 extract_hour <- function(data, col){
+  # extract hour using the hour() function from the lubridate package and add a new column with the extracted values to the data frame
   data[[paste0(col, '_hour')]] <- hour(data[[col]])
+  # return the modified data frame
   return(data)
 }
 
+# extract minute and add a new column with the extracted minute values to the data frame
 extract_min <- function(data, col){
+  # extract minute using the minute() function from the lubridate package and add a new column with the extracted values to the data frame
   data[[paste0(col, '_min')]] <- minute(data[[col]])
+  # return the modified data frame
   return(data)
 }
 
+# funtion to drop a column from the data frame
 drop_col <- function(data, col){
   data[[col]] <- NULL
   return(data)
 }
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   def extract_hour(data,col):
     data[col+'_hour']=data[col].dt.hour
@@ -285,9 +281,8 @@ df <- extract_hour(df, 'Dep_Time')
 df <- extract_min(df, 'Dep_Time')
 df <- drop_col(df, 'Dep_Time')
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   # Departure time is when a plane leaves the gate. 
   # Similar to Date_of_Journey we can extract values from Dep_Time
@@ -306,9 +301,8 @@ df <- extract_hour(df, 'Arrival_Time')
 df <- extract_min(df, 'Arrival_Time')
 df <- drop_col(df, 'Arrival_Time')
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   #extracting hour
   extract_hour(df,'Arrival_Time')
@@ -324,24 +318,24 @@ df <- drop_col(df, 'Arrival_Time')
 ```{r}
 head(df, 10)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df.head(10)
   ```
 </details>
 
 ```{r}
+# create 'Duration' column, with values based on the existing 'Duration' column
 df %>% 
-  mutate(Duration = case_when(grepl("^[0-9]+h [0-9]+m$", Duration) ~ Duration,
-                              grepl("^[0-9]+h", Duration) ~ paste0(Duration, " 0m"),
-                              grepl("[0-9]+m$", Duration) ~ paste0("0h ", Duration),
+  mutate(Duration = case_when(grepl("^[0-9]+h [0-9]+m$", Duration) ~ Duration, # if starts with one or more digits, followed by the letter "h", a space, one or more digits, and the letter "m", keep the original 'Duration' value
+                              grepl("^[0-9]+h", Duration) ~ paste0(Duration, " 0m"), # if starts with one or more digits and the letter "h", append the string " 0m" to the end of the 'Duration' value
+                              grepl("[0-9]+m$", Duration) ~ paste0("0h ", Duration), # if ends with one or more digits and the letter "m", prepend the string "0h " to the beginning of the 'Duration' value
+                              # if none of the above, assign NA
                               TRUE ~ NA_character_)) -> df
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   duration=list(df['Duration'])
   for i in range(len(duration)):
@@ -358,9 +352,8 @@ df %>%
 ```{r}
 head(df)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df.head()
   ```
@@ -375,9 +368,8 @@ minutes <- function(x){
   ifelse(is.na(x[2]), 0, as.numeric(sub(".*?(\\d+)m.*", "\\1", x[2])))
 }
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   def hour(x):
       return x.split(' ')[0][0:-1]
@@ -390,9 +382,8 @@ minutes <- function(x){
 ```{r}
 df$dur_hour <- sapply(df$Duration, hour)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df['dur_hour']=df['Duration'].apply(hour)
   ```
@@ -401,9 +392,8 @@ df$dur_hour <- sapply(df$Duration, hour)
 ```{r}
 df$dur_min <- sapply(strsplit(df$Duration, ' '), minutes)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df['dur_min']=df['Duration'].apply(minutes)
   ```
@@ -412,9 +402,8 @@ df$dur_min <- sapply(strsplit(df$Duration, ' '), minutes)
 ```{r}
 head(df, 10)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df.head(10)
   ```
@@ -423,9 +412,8 @@ head(df, 10)
 ```{r}
 drop_col(df, 'Duration')
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   drop_col(df,'Duration')
   ```
@@ -434,9 +422,8 @@ drop_col(df, 'Duration')
 ```{r}
 str(df)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df.dtypes
   ```
@@ -446,9 +433,8 @@ str(df)
 df$dur_hour <- as.integer(df$dur_hour)
 df$dur_min <- as.integer(df$dur_min)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df['dur_hour'] = df['dur_hour'].astype(int)
   df['dur_min'] = df['dur_min'].astype(int)
@@ -458,9 +444,8 @@ df$dur_min <- as.integer(df$dur_min)
 ```{r}
 str(df)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   df.dtypes
   ```
@@ -472,9 +457,8 @@ str(df)
 column <- names(df)[sapply(df, is.character)]
 column
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   column=[column for column in df.columns if df[column].dtype=='object']
   column
@@ -486,9 +470,8 @@ column
 ```{r}
 continuous_col <- names(df)[!sapply(df, is.character)]
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   continuous_col =[column for column in df.columns if df[column].dtype!='object']
   continuous_col
@@ -500,9 +483,8 @@ continuous_col <- names(df)[!sapply(df, is.character)]
 ```{r}
 categorical <- df[column]
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   categorical = df[column]
   ```
@@ -511,9 +493,8 @@ categorical <- df[column]
 ```{r}
 head(categorical)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   categorical.head()
   ```
@@ -522,9 +503,8 @@ head(categorical)
 ```{r}
 table(categorical$Airline)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   categorical['Airline'].value_counts()
   ```
@@ -537,9 +517,8 @@ ggplot(data = df, aes(x = reorder(Airline, -Price), y = Price)) +
   geom_boxplot() +
   labs(x = "Airline", y = "Price")
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   plt.figure(figsize=(15,8))
   sns.boxplot(x='Airline',y='Price',data=df.sort_values('Price',ascending=False))
@@ -551,9 +530,8 @@ ggplot(data = df, aes(x = reorder(Total_Stops, -Price), y = Price)) +
   geom_boxplot() +
   labs(x = "Total_Stops", y = "Price")
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   plt.figure(figsize=(15,8))
   sns.boxplot(x='Total_Stops',y='Price',data=df.sort_values('Price',ascending=False))
@@ -565,9 +543,8 @@ Airline <- as.data.frame(model.matrix(~ Airline - 1, data = categorical))
 new_names <- gsub("Airline", "", colnames(Airline))
 Airline <- setNames(Airline, new_names)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   # As Airline is Nominal Categorical data we will perform OneHotEncoding
   Airline=pd.get_dummies(categorical['Airline'],drop_first=True)
@@ -577,9 +554,8 @@ Airline <- setNames(Airline, new_names)
 ```{r}
 head(Airline)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   Airline.head()
   ```
@@ -588,9 +564,8 @@ head(Airline)
 ```{r}
 table(categorical$Source)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   categorical['Source'].value_counts()
   ```
@@ -601,9 +576,8 @@ ggplot(data = df, aes(x = reorder(Source, -Price), y = Price)) +
   geom_boxplot() +
   labs(x = "Source", y = "Price")
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   #Source vs Price
   plt.figure(figsize=(15,15))
@@ -618,9 +592,8 @@ Source <- setNames(Source, new_names)
 
 head(Source)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   #encoding of source column
   source=pd.get_dummies(categorical['Source'],drop_first=True)
@@ -631,9 +604,8 @@ head(Source)
 ```{r}
 table(categorical$Destination)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   categorical['Destination'].value_counts()
   ```
@@ -644,9 +616,8 @@ ggplot(data = df, aes(x = reorder(Destination, -Price), y = Price)) +
   geom_boxplot() +
   labs(x = "Destination", y = "Price")
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   plt.figure(figsize=(15,8))
   sns.boxplot(x='Destination',y='Price',data=df.sort_values('Price',ascending=False))
@@ -660,9 +631,8 @@ Destination <- setNames(Destination, new_names)
 
 head(Destination)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   #encoding of destination column
   destination=pd.get_dummies(categorical['Destination'],drop_first=True)
@@ -673,9 +643,8 @@ head(Destination)
 ```{r}
 table(categorical$Route)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   # now work on route column
   categorical['Route'].value_counts()
@@ -689,9 +658,8 @@ categorical$Route3 <- sapply(strsplit(as.character(categorical$Route), "→"), "
 categorical$Route4 <- sapply(strsplit(as.character(categorical$Route), "→"), "[", 4)
 categorical$Route5 <- sapply(strsplit(as.character(categorical$Route), "→"), "[", 5)
 ```
-
 <details>
-  <summary>Click to show Python code</summary>
+  <summary>Python code</summary>
   ```python
   categorical['Route1']=categorical['Route'].str.split('→').str[0]
   categorical['Route2']=categorical['Route'].str.split('→').str[1]
@@ -704,6 +672,12 @@ categorical$Route5 <- sapply(strsplit(as.character(categorical$Route), "→"), "
 ```{r}
 
 ```
+<details>
+  <summary>Python code</summary>
+  ```python
+
+  ```
+</details>
 
 ## Feature Selection
 
