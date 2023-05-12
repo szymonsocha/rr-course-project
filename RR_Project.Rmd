@@ -47,6 +47,7 @@ suppressPackageStartupMessages(library(tidyverse))
 library(readxl)
 library(dplyr)
 library(ggplot2)
+library(DT)
 #library(caret)
 #library(gridExtra)
 ```
@@ -410,7 +411,8 @@ head(df, 10)
 </details>
 
 ```{r}
-drop_col(df, 'Duration')
+df <- df %>% 
+  select(-Duration)
 ```
 <details>
   <summary>Python code</summary>
@@ -670,12 +672,109 @@ categorical$Route5 <- sapply(strsplit(as.character(categorical$Route), "→"), "
 </details>
 
 ```{r}
-
+categorical %>%
+  head(5) %>%
+  datatable(options = list(dom = 't', 
+                           paging = FALSE,
+                           scrollX = TRUE,
+                           scrollCollapse = TRUE))
 ```
 <details>
   <summary>Python code</summary>
   ```python
+  categorical.head()
+  ```
+</details>
 
+```{r}
+categorical <- categorical %>% 
+  select(-Route)
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  drop_col(categorical,'Route')
+  ```
+</details>
+
+```{r}
+categorical %>% 
+  summarise_all(~ sum(is.na(.))) %>% 
+  pivot_longer(cols = everything(),
+               names_to = 'Variable',
+               values_to = 'No. of missing values')
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  categorical.isnull().sum()
+  ```
+</details>
+
+```{r}
+categorical %>% colnames()
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  categorical.columns
+  ```
+</details>
+
+```{r}
+categorical <- categorical %>% 
+  mutate(Route3 = if_else(is.na(Route3), 'None', Route3),
+         Route4 = if_else(is.na(Route4), 'None', Route4),
+         Route5 = if_else(is.na(Route5), 'None', Route5))
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  for i in ['Route3', 'Route4', 'Route5']:
+    categorical[i].fillna('None',inplace=True)
+  ```
+</details>
+
+
+```{r}
+categorical %>% 
+  summarise_all(~ sum(is.na(.))) %>% 
+  pivot_longer(cols = everything(),
+               names_to = 'Variable',
+               values_to = 'No. of missing values')
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  categorical.isnull().sum()
+  ```
+</details>
+
+```{r}
+for (i in names(categorical)) {
+  cat(paste0(i, " has total ", length(unique(categorical[[i]])), " categories\n"))
+}
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  for i in categorical.columns:
+    print('{} has total {} categories'.format(i,len(categorical[i].value_counts())))
+  ```
+</details>
+
+```{r}
+df %>% 
+ggplot(aes(x = Arrival_Time_hour, y = Price)) + 
+  geom_hex(bins = 15, aes(fill = after_stat(count))) +
+  scale_fill_gradient(low = 'white', high = 'darkgreen') +
+  scale_y_continuous(breaks = seq(0, 80000, by = 10000)) +
+  theme(panel.background = element_rect(fill = "white"))
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  df.plot.hexbin(x='Arrival_Time_hour',y='Price',gridsize=15)
   ```
 </details>
 
