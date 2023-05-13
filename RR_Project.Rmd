@@ -48,6 +48,7 @@ library(readxl)
 library(dplyr)
 library(ggplot2)
 library(DT)
+library(ggpubr)
 #library(caret)
 #library(gridExtra)
 ```
@@ -778,6 +779,178 @@ ggplot(aes(x = Arrival_Time_hour, y = Price)) +
   ```
 </details>
 
+```{r}
+for (i in c("Route1", "Route2", "Route3", "Route4", "Route5")){
+  categorical[[i]] <- factor(categorical[[i]]) %>% as.numeric()
+}
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  # Applying label encoder
+  from sklearn.preprocessing import LabelEncoder
+  encoder = LabelEncoder()
+  for i in ['Route1', 'Route2', 'Route3', 'Route4', 'Route5']:
+    categorical[i]=encoder.fit_transform(categorical[i])
+  ```
+</details>
+
+```{r}
+categorical %>% 
+  head(5)
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  categorical.head()
+  ```
+</details>
+
+```{r}
+categorical <- categorical %>% 
+  select(-Additional_Info)
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  drop_col(categorical,'Additional_Info')
+  ```
+</details>
+
+
+```{r}
+categorical %>% 
+  select(Total_Stops) %>% 
+  unique()
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  categorical['Total_Stops'].unique()
+  ```
+</details>
+
+```{r}
+map_levels <- c('non-stop', '1 stop', '2 stops',  '3 stops', '4 stops')
+map_values <- c(0, 1, 2, 3, 4)
+categorical[['Total_Stops']] <- factor(categorical$Total_Stops, levels = map_levels, labels = map_values) %>% as.numeric() - 1
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  # encoding Total stops
+  dict={'non-stop':0, '2 stops':2, '1 stop':1, '3 stops':3, '4 stops':4}
+  categorical['Total_Stops']=categorical['Total_Stops'].map(dict)
+  ```
+</details>
+
+```{r}
+categorical %>% 
+  select(Total_Stops)
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  categorical['Total_Stops']
+  ```
+</details>
+
+```{r}
+categorical <- categorical %>% 
+  select(-Source, -Destination, -Airline)
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  drop_col(categorical,'Source')
+  drop_col(categorical,'Destination')
+  drop_col(categorical,'Airline')
+  ```
+</details>
+
+
+```{r}
+final_df <- cbind(categorical, Airline, Source, Destination, df[continuous_col])
+final_df <- final_df[!duplicated(names(final_df))]
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  final_df=pd.concat([categorical,Airline,source,destination,df[continuous_col]],axis=1)
+  ```
+</details>
+
+```{r}
+final_df %>% 
+  head(5) %>%
+    datatable(options = list(dom = 't', 
+                           paging = FALSE,
+                           scrollX = TRUE,
+                           scrollCollapse = TRUE))
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  final_df.head()
+  ```
+</details>
+
+```{r}
+options(max.print = 33)
+final_df %>% 
+  head(5) %>% 
+    datatable(options = list(dom = 't', 
+                           paging = FALSE,
+                           scrollX = TRUE,
+                           scrollCollapse = TRUE))
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  pd.set_option('display.max_columns',33)
+  final_df.head()
+  ```
+</details>
+
+## Check For Outliers
+
+```{r}
+plot <- function(data, col) {
+  
+  p1 <- ggplot(data, aes(x = .data[[col]])) +
+    geom_histogram(aes(y = ..density..), fill = "lightblue", alpha = 0.5) +
+    geom_density(color = "darkblue", linewidth = 1) +
+    labs(x = col, y = "Frequency") +
+    theme_bw()
+  
+  p2 <- ggplot(data, aes(y = .data[[col]])) +
+    geom_boxplot(fill = "darkblue", color = "black", alpha = 0.5) +
+    labs(x = "", y = col) +
+    theme_bw() +
+    coord_flip()
+  
+  ggarrange(p1, p2, ncol = 1, nrow = 2)
+}
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  def plot(data,col):
+    fig,(ax1,ax2)=plt.subplots(2,1)
+    sns.distplot(data[col],ax=ax1)
+    sns.boxplot(data[col],ax=ax2)
+  ```
+</details>
+
+```{r message=FALSE, warning=FALSE}
+plot(final_df,'Price')
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  plot(final_df,'Price')
+  ```
+</details>
 ## Feature Selection
 
 ## Models
