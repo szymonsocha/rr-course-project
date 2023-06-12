@@ -951,7 +951,80 @@ plot(final_df,'Price')
   plot(final_df,'Price')
   ```
 </details>
+
 ## Feature Selection
+
+## Feature Selection
+
+Feature selection involves identifying the optimal feature and establishing a strong relationship with the independent variable.
+
+Firstly, the dataset is divided into X and y columns for further modeling purposes.
+
+```{r message=FALSE, warning=FALSE}
+X <- final_df[, !(names(final_df) == "Price")]
+y <- df$Price
+```
+
+<details>
+  <summary>Python code</summary>
+  ```python
+  X=final_df.drop('Price',axis=1)
+  y=df['Price']
+  ```
+</details>
+
+Suggested approach for feature importance in the base study was Mutual Information of variables, which is a measure of the similarity between two labels of the same data. There are several options in R to calculate Mutual Information - for the purpose if this project calculation or MI scores with *praznik* package is proposed.
+
+```{r, message=FALSE, warning=FALSE}
+library(praznik)
+miScores_result <- miScores(X, y, threads = 0)
+print(miScores_result)
+```
+<details>
+  <summary>Python code</summary>
+  ```python
+  from sklearn.feature_selection import mutual_info_classif
+  mutual_info_classif(X,y)
+  ```
+</details>
+
+MI scores are sorted in decreasing order in a dataframe as follows:
+
+```{r, message=FALSE, warning=FALSE}
+miScores_df <- data.frame()
+miScores_df <- data.frame(feature = names(miScores_result), miScore = unlist(miScores_result))
+miScores_df <- miScores_df[order(miScores_df$miScore, decreasing = TRUE), ]
+print(miScores_df)
+```
+
+<details>
+  <summary>Python code</summary>
+  ```python
+  imp = pd.DataFrame(mutual_info_classif(X,y),index=X.columns)
+  imp
+  imp.columns=['importance']
+  imp.sort_values(by='importance',ascending=False)
+  ```
+</details>
+
+The results of MI scores differ from the values obtained while using Python. It shows that X variables are the most significant, while Y are not. In order to check the cause of such results, another Feature Importance technique was proposed using *caret* package - Learning Vector Quantization (LVQ) model.
+
+```{r message=FALSE, warning=FALSE}
+# Load the library
+library(mlbench)
+library(caret)
+
+control <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+
+# Train the model
+model <- train(y ~ ., data = data.frame(X, y), method = "lm", preProcess = "scale", trControl = control)
+
+# Estimate variable importance
+importance <- varImp(model, scale = FALSE)
+
+# Summarize importance
+print(importance)
+```
 
 ## Models
 
