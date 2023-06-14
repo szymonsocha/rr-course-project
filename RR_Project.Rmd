@@ -10,6 +10,9 @@ output:
 ---
 
 <style>
+body {
+text-align: justify
+}
 details {
   overflow: hidden;
   transition: max-height 0.5s ease-out;
@@ -689,6 +692,8 @@ categorical$Route5 <- sapply(strsplit(as.character(categorical$Route), "→"), "
   ```
 </details>
 
+Let's take a look at our dataframe as to how zminenne Route 1 through 5 look by each intermediate destination.
+
 ```{r}
 categorical %>%
   head(5) %>%
@@ -705,6 +710,8 @@ categorical %>%
   ```
 </details>
 
+Removing the `Route` variable gives us guarantees that the same information is not passed twice. 
+
 ```{r}
 categorical <- categorical %>% 
   select(-Route)
@@ -716,6 +723,8 @@ categorical <- categorical %>%
   drop_col(categorical,'Route')
   ```
 </details>
+
+Due to the fact that an airplane flight does not always have to go through more than one destination, it is necessary to check how many missing values we have for the Route variables.
 
 ```{r}
 categorical %>% 
@@ -731,6 +740,8 @@ categorical %>%
   categorical.isnull().sum()
   ```
 </details>
+
+We have as many as 3491 missing values for the `Route3` variable, 9116 for the `Route4` variable and 10636 for the `Route5` variable. For each such missing value, we choose to replace it with `None`.
 
 ```{r}
 categorical %>% colnames()
@@ -758,6 +769,7 @@ categorical <- categorical %>%
   ```
 </details>
 
+It is also an important activity to check how many unique values each of the categorical variables has. In case one of the categorical variables contains as many classes as the number of variables then such a particular variable might not be useful for modeling. 
 
 ```{r}
 categorical %>% 
@@ -788,6 +800,8 @@ for (i in names(categorical)) {
   ```
 </details>
 
+Let's now see how the observation counts break down by individual airplane arrival time and by flight price. As you can see, most of the observations are in the range of less than $20000 per flight, and we can see the highest number of arrivals for the late afternoon hours (6 and 7 pm).
+
 ```{r}
 df %>% 
 ggplot(aes(x = Arrival_Time_hour, y = Price)) + 
@@ -803,6 +817,8 @@ ggplot(aes(x = Arrival_Time_hour, y = Price)) +
   df.plot.hexbin(x='Arrival_Time_hour',y='Price',gridsize=15)
   ```
 </details>
+
+Machine learning algorithms can only cope on numerical values. Therefore, consistently, categorical variables must be decoded from word values to numeric values. 
 
 ```{r}
 for (i in c("Route1", "Route2", "Route3", "Route4", "Route5")){
@@ -859,6 +875,7 @@ categorical %>%
   ```
 </details>
 
+
 ```{r}
 map_levels <- c('non-stop', '1 stop', '2 stops',  '3 stops', '4 stops')
 map_values <- c(0, 1, 2, 3, 4)
@@ -901,6 +918,8 @@ categorical <- categorical %>%
 </details>
 
 <span style="font-size:x-large;display:table;margin: 0 auto;">After all preprocessing, Our data is ready for the modeling</span>
+
+At this point it is necessary to collect all minor dataframes on which separately performed ordering operations, decoding of categorical variables, calculation of numerical values from dates or transformation by appropriate mathematical functions.
 
 ```{r}
 final_df <- cbind(categorical, Airline, Source, Destination, df[continuous_col])
@@ -950,6 +969,8 @@ final_df %>%
 
 ## Check For Outliers
 
+Analysis of outlier observations provides a deeper understanding of the distribution of all observations. It is also used to detect some incomprehensible behavior among the data, some anomalies that machine learning models may not expect. That's why it's worth looking at the distribution of the dependent variable on the value of flight. 
+
 ```{r}
 plot <- function(data, col) {
   
@@ -990,9 +1011,9 @@ plot(final_df,'Price')
   ```
 </details>
 
-## Handling outliers:
+## Handling outliers
 
-As there is some outliers in price feature,so we replace it with median.
+As you can see from the graph above, there are outliers in our dataset that can disrupt the inference of machine learning models. We therefore decide to replace all values above the price of $40000 with the median value for the entire set. After this change, let's look at how the distribution of the dependent variable now looks. 
 
 ```{r}
 final_df$Price <- ifelse(final_df$Price >= 40000, median(final_df$Price), final_df$Price)
