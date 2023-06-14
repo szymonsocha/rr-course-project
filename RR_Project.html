@@ -12,7 +12,7 @@
 
 <meta name="author" content="Robert Kowalczyk, Szymon Socha, Karolina Szczęsna" />
 
-<meta name="date" content="2023-05-13" />
+<meta name="date" content="2023-06-14" />
 
 <title>Reproducible Research Project</title>
 
@@ -2797,13 +2797,16 @@ code span.ot { color: #007020; }
 Project</h1>
 <h4 class="author project-author">Robert Kowalczyk, Szymon Socha,
 Karolina Szczęsna</h4>
-<h4 class="date project-date">2023-05-13</h4>
+<h4 class="date project-date">2023-06-14</h4>
 </section>
 
 
 <div id="TOC" class="toc">
 <div class="toc-box">
 <ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#comments-on-reproducibility" id="toc-comments-on-reproducibility">Comments on
+reproducibility</a></li>
 <li><a href="#importing-dataset" id="toc-importing-dataset">Importing
 dataset</a>
 <ul>
@@ -2818,8 +2821,22 @@ Cleaning</a></li>
 Outliers</a></li>
 <li><a href="#feature-selection" id="toc-feature-selection">Feature
 Selection</a></li>
-<li><a href="#models" id="toc-models">Models</a></li>
+<li><a href="#models" id="toc-models">Models</a>
+<ul>
+<li><a href="#logistic-regression" id="toc-logistic-regression">Logistic
+Regression</a></li>
+<li><a href="#k-nearest-neighbors-regression" id="toc-k-nearest-neighbors-regression">K-nearest Neighbors
+Regression</a></li>
+<li><a href="#decision-tree" id="toc-decision-tree">Decision
+Tree</a></li>
+<li><a href="#gradient-boosting" id="toc-gradient-boosting">Gradient
+Boosting</a></li>
+</ul></li>
+<li><a href="#extended-models" id="toc-extended-models">Extended
+models</a>
+<ul>
 <li><a href="#hypertunning-the-model" id="toc-hypertunning-the-model">Hypertunning the model</a></li>
+</ul></li>
 </ul>
 </div>
 </div>
@@ -2840,11 +2857,15 @@ font-weight: normal;
 font-style: italic;
 }
 </style>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
 <p>This is an RMarkdown presentation that serves as a final project for
 the course Reproducible Research.<br />
-The project’s topic involves transcribing a ready-made <a href="https://www.kaggle.com/code/anshigupta01/flight-price-prediction/notebook?fbclid=IwAR2vtpE8xwc7nhPqDwdEiwwImw62_XuIxTgEkG0Qo2OCCyHIONRIv7DD3pM">Python
+</p>
+<p>The project’s topic involves transcribing a ready-made <a href="https://www.kaggle.com/code/anshigupta01/flight-price-prediction/notebook?fbclid=IwAR2vtpE8xwc7nhPqDwdEiwwImw62_XuIxTgEkG0Qo2OCCyHIONRIv7DD3pM">Python
 notebook</a>, downloaded from the Kaggle platform, into R.<br />
-Additionally, the analysis will be expanded to include an additional
+</p>
+<p>Additionally, the analysis will be expanded to include an additional
 machine learning model.<br />
 In order to make this project reproducible, we utilize the
 <code>dotenv</code> package to store the environment state.</p>
@@ -2856,6 +2877,32 @@ expand the rewritten Python code.</p>
 <li>Szymon Socha</li>
 <li>Karolina Szczęsna</li>
 </ul>
+</div>
+<div id="comments-on-reproducibility" class="section level2">
+<h2>Comments on reproducibility</h2>
+<p>Overall, the main goal of this project, therefore reproducing the
+aforementioned notebook from Python to R, was reached. However, it is
+worth mentioning that some challenges were encountered, while
+reproducing the project to a different programming language. Firstly,
+the original code lacked specific comments and detailed descriptions of
+the steps in the notebook (plot descriptions, argumentation to choose
+certain models etc.). Our project has been expanded to include this. The
+original code had mistakes and was not optimal, specifically in
+Preprocessing part. While transcribing the notebook to R, certain code
+snippets were cleaned and optimized to be more readable and efficient.
+Another challenge that occurred was the difference in results for
+selected models. In most cases the measurement metrics did not varied
+significantly, however the distribution of residuals proved more
+prediction errors than expected.</p>
+<p>One of the potential cause of subtle differences in results is the
+fact that Python and R are different programming languages with their
+own syntax, libraries, and conventions. Translating code from one
+language to another can introduce some variances, especially when it
+comes to functions, data structures, and library-specific
+implementations. These differences could affect the overall behavior of
+the code. Other than that, different libraries in Python and R have
+different default hyperparameters for machine learning models, leading
+to variations in the trained models and their predictions.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(tidyverse))</span></code></pre></div>
 <pre><code>## Warning: package &#39;tidyverse&#39; was built under R version 4.2.3</code></pre>
 <pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 4.2.3</code></pre>
@@ -2891,6 +2938,7 @@ Python code
 <span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> warnings</span>
 <span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  warnings.filterwarnings(<span class="st">&#39;ignore&#39;</span>)</span></code></pre></div>
 </details>
+</div>
 <div id="importing-dataset" class="section level2">
 <h2>Importing dataset</h2>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">&#39;data/Data_Train.xlsx&#39;</span>)</span>
@@ -3070,8 +3118,8 @@ Python code
 ## $ Source          &lt;chr&gt; &quot;Banglore&quot;, &quot;Kolkata&quot;, &quot;Delhi&quot;, &quot;Kolkata&quot;, &quot;Banglore&quot;,…
 ## $ Destination     &lt;chr&gt; &quot;New Delhi&quot;, &quot;Banglore&quot;, &quot;Cochin&quot;, &quot;Banglore&quot;, &quot;New De…
 ## $ Route           &lt;chr&gt; &quot;BLR → DEL&quot;, &quot;CCU → IXR → BBI → BLR&quot;, &quot;DEL → LKO → BOM…
-## $ Dep_Time        &lt;dttm&gt; 2023-05-13 22:20:00, 2023-05-13 05:50:00, 2023-05-13 …
-## $ Arrival_Time    &lt;dttm&gt; 2023-05-13 01:10:00, 2023-05-13 13:15:00, 2023-05-13 …
+## $ Dep_Time        &lt;dttm&gt; 2023-06-14 22:20:00, 2023-06-14 05:50:00, 2023-06-14 …
+## $ Arrival_Time    &lt;dttm&gt; 2023-06-14 01:10:00, 2023-06-14 13:15:00, 2023-06-14 …
 ## $ Duration        &lt;chr&gt; &quot;2h 50m&quot;, &quot;7h 25m&quot;, &quot;19h&quot;, &quot;5h 25m&quot;, &quot;4h 45m&quot;, &quot;2h 25m…
 ## $ Total_Stops     &lt;chr&gt; &quot;non-stop&quot;, &quot;2 stops&quot;, &quot;2 stops&quot;, &quot;1 stop&quot;, &quot;1 stop&quot;, …
 ## $ Additional_Info &lt;chr&gt; &quot;No info&quot;, &quot;No info&quot;, &quot;No info&quot;, &quot;No info&quot;, &quot;No info&quot;,…
@@ -3095,16 +3143,16 @@ Python code
 <pre><code>## # A tibble: 10 × 13
 ##    Airline      Date_of_Journey     Source Destination Route Dep_Time           
 ##    &lt;chr&gt;        &lt;dttm&gt;              &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt; &lt;dttm&gt;             
-##  1 IndiGo       2019-03-24 00:00:00 Bangl… New Delhi   BLR … 2023-05-13 22:20:00
-##  2 Air India    2019-05-01 00:00:00 Kolka… Banglore    CCU … 2023-05-13 05:50:00
-##  3 Jet Airways  2019-06-09 00:00:00 Delhi  Cochin      DEL … 2023-05-13 09:25:00
-##  4 IndiGo       2019-05-12 00:00:00 Kolka… Banglore    CCU … 2023-05-13 18:05:00
-##  5 IndiGo       2019-03-01 00:00:00 Bangl… New Delhi   BLR … 2023-05-13 16:50:00
-##  6 SpiceJet     2019-06-24 00:00:00 Kolka… Banglore    CCU … 2023-05-13 09:00:00
-##  7 Jet Airways  2019-03-12 00:00:00 Bangl… New Delhi   BLR … 2023-05-13 18:55:00
-##  8 Jet Airways  2019-03-01 00:00:00 Bangl… New Delhi   BLR … 2023-05-13 08:00:00
-##  9 Jet Airways  2019-03-12 00:00:00 Bangl… New Delhi   BLR … 2023-05-13 08:55:00
-## 10 Multiple ca… 2019-05-27 00:00:00 Delhi  Cochin      DEL … 2023-05-13 11:25:00
+##  1 IndiGo       2019-03-24 00:00:00 Bangl… New Delhi   BLR … 2023-06-14 22:20:00
+##  2 Air India    2019-05-01 00:00:00 Kolka… Banglore    CCU … 2023-06-14 05:50:00
+##  3 Jet Airways  2019-06-09 00:00:00 Delhi  Cochin      DEL … 2023-06-14 09:25:00
+##  4 IndiGo       2019-05-12 00:00:00 Kolka… Banglore    CCU … 2023-06-14 18:05:00
+##  5 IndiGo       2019-03-01 00:00:00 Bangl… New Delhi   BLR … 2023-06-14 16:50:00
+##  6 SpiceJet     2019-06-24 00:00:00 Kolka… Banglore    CCU … 2023-06-14 09:00:00
+##  7 Jet Airways  2019-03-12 00:00:00 Bangl… New Delhi   BLR … 2023-06-14 18:55:00
+##  8 Jet Airways  2019-03-01 00:00:00 Bangl… New Delhi   BLR … 2023-06-14 08:00:00
+##  9 Jet Airways  2019-03-12 00:00:00 Bangl… New Delhi   BLR … 2023-06-14 08:55:00
+## 10 Multiple ca… 2019-05-27 00:00:00 Delhi  Cochin      DEL … 2023-06-14 11:25:00
 ## # ℹ 7 more variables: Arrival_Time &lt;dttm&gt;, Duration &lt;chr&gt;, Total_Stops &lt;chr&gt;,
 ## #   Additional_Info &lt;chr&gt;, Price &lt;dbl&gt;, journey_day &lt;dbl&gt;, journey_month &lt;dbl&gt;</code></pre>
 <details>
@@ -3743,8 +3791,8 @@ Python code
 <span id="cb133-4"><a href="#cb133-4" aria-hidden="true" tabindex="-1"></a>                           <span class="at">paging =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb133-5"><a href="#cb133-5" aria-hidden="true" tabindex="-1"></a>                           <span class="at">scrollX =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb133-6"><a href="#cb133-6" aria-hidden="true" tabindex="-1"></a>                           <span class="at">scrollCollapse =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-80229d2d10eec7472d38" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-80229d2d10eec7472d38">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5"],["IndiGo","Air India","Jet Airways","IndiGo","IndiGo"],["Banglore","Kolkata","Delhi","Kolkata","Banglore"],["New Delhi","Banglore","Cochin","Banglore","New Delhi"],["BLR → DEL","CCU → IXR → BBI → BLR","DEL → LKO → BOM → COK","CCU → NAG → BLR","BLR → NAG → DEL"],["non-stop","2 stops","2 stops","1 stop","1 stop"],["No info","No info","No info","No info","No info"],["BLR ","CCU ","DEL ","CCU ","BLR "],[" DEL"," IXR "," LKO "," NAG "," NAG "],[null," BBI "," BOM "," BLR"," DEL"],[null," BLR"," COK",null,null],[null,null,null,null,null]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Airline<\/th>\n      <th>Source<\/th>\n      <th>Destination<\/th>\n      <th>Route<\/th>\n      <th>Total_Stops<\/th>\n      <th>Additional_Info<\/th>\n      <th>Route1<\/th>\n      <th>Route2<\/th>\n      <th>Route3<\/th>\n      <th>Route4<\/th>\n      <th>Route5<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","paging":false,"scrollX":true,"scrollCollapse":true,"columnDefs":[{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-a883bc984dd3aa482afc" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-a883bc984dd3aa482afc">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5"],["IndiGo","Air India","Jet Airways","IndiGo","IndiGo"],["Banglore","Kolkata","Delhi","Kolkata","Banglore"],["New Delhi","Banglore","Cochin","Banglore","New Delhi"],["BLR → DEL","CCU → IXR → BBI → BLR","DEL → LKO → BOM → COK","CCU → NAG → BLR","BLR → NAG → DEL"],["non-stop","2 stops","2 stops","1 stop","1 stop"],["No info","No info","No info","No info","No info"],["BLR ","CCU ","DEL ","CCU ","BLR "],[" DEL"," IXR "," LKO "," NAG "," NAG "],[null," BBI "," BOM "," BLR"," DEL"],[null," BLR"," COK",null,null],[null,null,null,null,null]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Airline<\/th>\n      <th>Source<\/th>\n      <th>Destination<\/th>\n      <th>Route<\/th>\n      <th>Total_Stops<\/th>\n      <th>Additional_Info<\/th>\n      <th>Route1<\/th>\n      <th>Route2<\/th>\n      <th>Route3<\/th>\n      <th>Route4<\/th>\n      <th>Route5<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","paging":false,"scrollX":true,"scrollCollapse":true,"columnDefs":[{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <details>
 <summary>
 Python code
@@ -3973,8 +4021,8 @@ Python code
 <span id="cb172-4"><a href="#cb172-4" aria-hidden="true" tabindex="-1"></a>                           <span class="at">paging =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb172-5"><a href="#cb172-5" aria-hidden="true" tabindex="-1"></a>                           <span class="at">scrollX =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb172-6"><a href="#cb172-6" aria-hidden="true" tabindex="-1"></a>                           <span class="at">scrollCollapse =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-b990e9c21616d3d1f454" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-b990e9c21616d3d1f454">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5"],[0,2,2,1,1],[1,3,4,3,1],[14,26,33,35,35],[30,2,5,4,9],[14,4,6,14,14],[6,6,6,6,6],[0,0,0,0,0],[0,1,0,0,0],[0,0,0,0,0],[1,0,0,1,1],[0,0,1,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[1,0,0,0,1],[0,0,0,0,0],[0,0,1,0,0],[0,1,0,1,0],[0,0,0,0,0],[0,0,1,0,0],[0,0,0,0,0],[1,0,0,0,1],[3897,7662,13882,6218,13302],[24,1,9,12,1],[3,5,6,5,3],[22,5,9,18,16],[20,50,25,5,50],[1,13,4,23,21],[10,15,25,30,35],[2,7,19,5,4],[50,25,0,25,45]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Total_Stops<\/th>\n      <th>Route1<\/th>\n      <th>Route2<\/th>\n      <th>Route3<\/th>\n      <th>Route4<\/th>\n      <th>Route5<\/th>\n      <th>Air Asia<\/th>\n      <th>Air India<\/th>\n      <th>GoAir<\/th>\n      <th>IndiGo<\/th>\n      <th>Jet Airways<\/th>\n      <th>Jet Airways Business<\/th>\n      <th>Multiple carriers<\/th>\n      <th>Multiple carriers Premium economy<\/th>\n      <th>SpiceJet<\/th>\n      <th>Trujet<\/th>\n      <th>Vistara<\/th>\n      <th>Vistara Premium economy<\/th>\n      <th>Banglore<\/th>\n      <th>Chennai<\/th>\n      <th>Delhi<\/th>\n      <th>Kolkata<\/th>\n      <th>Mumbai<\/th>\n      <th>Cochin<\/th>\n      <th>Hyderabad<\/th>\n      <th>New Delhi<\/th>\n      <th>Price<\/th>\n      <th>journey_day<\/th>\n      <th>journey_month<\/th>\n      <th>Dep_Time_hour<\/th>\n      <th>Dep_Time_min<\/th>\n      <th>Arrival_Time_hour<\/th>\n      <th>Arrival_Time_min<\/th>\n      <th>dur_hour<\/th>\n      <th>dur_min<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","paging":false,"scrollX":true,"scrollCollapse":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-9d8ed612ba50fb4a0e2b" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-9d8ed612ba50fb4a0e2b">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5"],[0,2,2,1,1],[1,3,4,3,1],[14,26,33,35,35],[30,2,5,4,9],[14,4,6,14,14],[6,6,6,6,6],[0,0,0,0,0],[0,1,0,0,0],[0,0,0,0,0],[1,0,0,1,1],[0,0,1,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[1,0,0,0,1],[0,0,0,0,0],[0,0,1,0,0],[0,1,0,1,0],[0,0,0,0,0],[0,0,1,0,0],[0,0,0,0,0],[1,0,0,0,1],[3897,7662,13882,6218,13302],[24,1,9,12,1],[3,5,6,5,3],[22,5,9,18,16],[20,50,25,5,50],[1,13,4,23,21],[10,15,25,30,35],[2,7,19,5,4],[50,25,0,25,45]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Total_Stops<\/th>\n      <th>Route1<\/th>\n      <th>Route2<\/th>\n      <th>Route3<\/th>\n      <th>Route4<\/th>\n      <th>Route5<\/th>\n      <th>Air Asia<\/th>\n      <th>Air India<\/th>\n      <th>GoAir<\/th>\n      <th>IndiGo<\/th>\n      <th>Jet Airways<\/th>\n      <th>Jet Airways Business<\/th>\n      <th>Multiple carriers<\/th>\n      <th>Multiple carriers Premium economy<\/th>\n      <th>SpiceJet<\/th>\n      <th>Trujet<\/th>\n      <th>Vistara<\/th>\n      <th>Vistara Premium economy<\/th>\n      <th>Banglore<\/th>\n      <th>Chennai<\/th>\n      <th>Delhi<\/th>\n      <th>Kolkata<\/th>\n      <th>Mumbai<\/th>\n      <th>Cochin<\/th>\n      <th>Hyderabad<\/th>\n      <th>New Delhi<\/th>\n      <th>Price<\/th>\n      <th>journey_day<\/th>\n      <th>journey_month<\/th>\n      <th>Dep_Time_hour<\/th>\n      <th>Dep_Time_min<\/th>\n      <th>Arrival_Time_hour<\/th>\n      <th>Arrival_Time_min<\/th>\n      <th>dur_hour<\/th>\n      <th>dur_min<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","paging":false,"scrollX":true,"scrollCollapse":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <details>
 <summary>
 Python code
@@ -3988,8 +4036,8 @@ Python code
 <span id="cb174-5"><a href="#cb174-5" aria-hidden="true" tabindex="-1"></a>                           <span class="at">paging =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb174-6"><a href="#cb174-6" aria-hidden="true" tabindex="-1"></a>                           <span class="at">scrollX =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb174-7"><a href="#cb174-7" aria-hidden="true" tabindex="-1"></a>                           <span class="at">scrollCollapse =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-c59825fa6d9a7d511984" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-c59825fa6d9a7d511984">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5"],[0,2,2,1,1],[1,3,4,3,1],[14,26,33,35,35],[30,2,5,4,9],[14,4,6,14,14],[6,6,6,6,6],[0,0,0,0,0],[0,1,0,0,0],[0,0,0,0,0],[1,0,0,1,1],[0,0,1,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[1,0,0,0,1],[0,0,0,0,0],[0,0,1,0,0],[0,1,0,1,0],[0,0,0,0,0],[0,0,1,0,0],[0,0,0,0,0],[1,0,0,0,1],[3897,7662,13882,6218,13302],[24,1,9,12,1],[3,5,6,5,3],[22,5,9,18,16],[20,50,25,5,50],[1,13,4,23,21],[10,15,25,30,35],[2,7,19,5,4],[50,25,0,25,45]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Total_Stops<\/th>\n      <th>Route1<\/th>\n      <th>Route2<\/th>\n      <th>Route3<\/th>\n      <th>Route4<\/th>\n      <th>Route5<\/th>\n      <th>Air Asia<\/th>\n      <th>Air India<\/th>\n      <th>GoAir<\/th>\n      <th>IndiGo<\/th>\n      <th>Jet Airways<\/th>\n      <th>Jet Airways Business<\/th>\n      <th>Multiple carriers<\/th>\n      <th>Multiple carriers Premium economy<\/th>\n      <th>SpiceJet<\/th>\n      <th>Trujet<\/th>\n      <th>Vistara<\/th>\n      <th>Vistara Premium economy<\/th>\n      <th>Banglore<\/th>\n      <th>Chennai<\/th>\n      <th>Delhi<\/th>\n      <th>Kolkata<\/th>\n      <th>Mumbai<\/th>\n      <th>Cochin<\/th>\n      <th>Hyderabad<\/th>\n      <th>New Delhi<\/th>\n      <th>Price<\/th>\n      <th>journey_day<\/th>\n      <th>journey_month<\/th>\n      <th>Dep_Time_hour<\/th>\n      <th>Dep_Time_min<\/th>\n      <th>Arrival_Time_hour<\/th>\n      <th>Arrival_Time_min<\/th>\n      <th>dur_hour<\/th>\n      <th>dur_min<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","paging":false,"scrollX":true,"scrollCollapse":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-29d41a4d76eaf762ab73" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-29d41a4d76eaf762ab73">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5"],[0,2,2,1,1],[1,3,4,3,1],[14,26,33,35,35],[30,2,5,4,9],[14,4,6,14,14],[6,6,6,6,6],[0,0,0,0,0],[0,1,0,0,0],[0,0,0,0,0],[1,0,0,1,1],[0,0,1,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[1,0,0,0,1],[0,0,0,0,0],[0,0,1,0,0],[0,1,0,1,0],[0,0,0,0,0],[0,0,1,0,0],[0,0,0,0,0],[1,0,0,0,1],[3897,7662,13882,6218,13302],[24,1,9,12,1],[3,5,6,5,3],[22,5,9,18,16],[20,50,25,5,50],[1,13,4,23,21],[10,15,25,30,35],[2,7,19,5,4],[50,25,0,25,45]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Total_Stops<\/th>\n      <th>Route1<\/th>\n      <th>Route2<\/th>\n      <th>Route3<\/th>\n      <th>Route4<\/th>\n      <th>Route5<\/th>\n      <th>Air Asia<\/th>\n      <th>Air India<\/th>\n      <th>GoAir<\/th>\n      <th>IndiGo<\/th>\n      <th>Jet Airways<\/th>\n      <th>Jet Airways Business<\/th>\n      <th>Multiple carriers<\/th>\n      <th>Multiple carriers Premium economy<\/th>\n      <th>SpiceJet<\/th>\n      <th>Trujet<\/th>\n      <th>Vistara<\/th>\n      <th>Vistara Premium economy<\/th>\n      <th>Banglore<\/th>\n      <th>Chennai<\/th>\n      <th>Delhi<\/th>\n      <th>Kolkata<\/th>\n      <th>Mumbai<\/th>\n      <th>Cochin<\/th>\n      <th>Hyderabad<\/th>\n      <th>New Delhi<\/th>\n      <th>Price<\/th>\n      <th>journey_day<\/th>\n      <th>journey_month<\/th>\n      <th>Dep_Time_hour<\/th>\n      <th>Dep_Time_min<\/th>\n      <th>Arrival_Time_hour<\/th>\n      <th>Arrival_Time_min<\/th>\n      <th>dur_hour<\/th>\n      <th>dur_min<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","paging":false,"scrollX":true,"scrollCollapse":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <details>
 <summary>
 Python code
@@ -4037,12 +4085,397 @@ Python code
 </div>
 <div id="feature-selection" class="section level2">
 <h2>Feature Selection</h2>
+<p>Feature selection involves identifying the optimal feature and
+establishing a strong relationship with the independent variable.</p>
+<p>Firstly, the dataset is divided into X and y columns for further
+modeling purposes.</p>
+<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="#cb180-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract all columns but Price as X</span></span>
+<span id="cb180-2"><a href="#cb180-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> final_df[, <span class="sc">!</span>(<span class="fu">names</span>(final_df) <span class="sc">==</span> <span class="st">&quot;Price&quot;</span>)]</span>
+<span id="cb180-3"><a href="#cb180-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb180-4"><a href="#cb180-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract Price column as y</span></span>
+<span id="cb180-5"><a href="#cb180-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> df<span class="sc">$</span>Price</span></code></pre></div>
+<details>
+<summary>
+Python code
+</summary>
+<div class="sourceCode" id="cb181"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb181-1"><a href="#cb181-1" aria-hidden="true" tabindex="-1"></a>  X<span class="op">=</span>final_df.drop(<span class="st">&#39;Price&#39;</span>,axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb181-2"><a href="#cb181-2" aria-hidden="true" tabindex="-1"></a>  y<span class="op">=</span>df[<span class="st">&#39;Price&#39;</span>]</span></code></pre></div>
+</details>
+<p>Suggested approach for feature importance in the base study was
+Mutual Information of variables, which is a measure of the similarity
+between two labels of the same data. There are several options in R to
+calculate Mutual Information - for the purpose if this project
+calculation or MI scores with <em>praznik</em> package is proposed.</p>
+<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="#cb182-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load library</span></span>
+<span id="cb182-2"><a href="#cb182-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(praznik)</span>
+<span id="cb182-3"><a href="#cb182-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb182-4"><a href="#cb182-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Mutual Information of variables</span></span>
+<span id="cb182-5"><a href="#cb182-5" aria-hidden="true" tabindex="-1"></a>miScores_result <span class="ot">&lt;-</span> <span class="fu">miScores</span>(X, y, <span class="at">threads =</span> <span class="dv">0</span>)</span>
+<span id="cb182-6"><a href="#cb182-6" aria-hidden="true" tabindex="-1"></a>miScores_result</span></code></pre></div>
+<pre><code>##                       Total_Stops                            Route1 
+##                      2.336349e-01                      9.215222e-02 
+##                            Route2                            Route3 
+##                      1.241759e-01                      2.238683e-01 
+##                            Route4                            Route5 
+##                      7.981477e-02                      3.185580e-03 
+##                          Air Asia                         Air India 
+##                      1.150806e-02                      1.903430e-03 
+##                             GoAir                            IndiGo 
+##                      6.452189e-03                      8.605347e-02 
+##                       Jet Airways              Jet Airways Business 
+##                      1.034795e-01                      4.450533e-03 
+##                 Multiple carriers Multiple carriers Premium economy 
+##                      6.514998e-03                      1.079100e-03 
+##                          SpiceJet                            Trujet 
+##                      3.766077e-02                      5.390728e-05 
+##                           Vistara           Vistara Premium economy 
+##                      5.791051e-03                      1.197386e-05 
+##                          Banglore                           Chennai 
+##                      4.063606e-02                      1.409776e-02 
+##                             Delhi                           Kolkata 
+##                      3.690511e-02                      1.077157e-02 
+##                            Mumbai                            Cochin 
+##                      1.849308e-02                      3.690511e-02 
+##                         Hyderabad                         New Delhi 
+##                      1.849308e-02                      1.854485e-02 
+##                       journey_day                     journey_month 
+##                      2.858821e-02                      5.656529e-02 
+##                     Dep_Time_hour                      Dep_Time_min 
+##                      2.647352e-02                      3.943039e-02 
+##                 Arrival_Time_hour                  Arrival_Time_min 
+##                      1.052021e-01                      4.651972e-02 
+##                          dur_hour                           dur_min 
+##                      2.613550e-01                      1.829428e-02</code></pre>
+<details>
+<summary>
+Python code
+</summary>
+<div class="sourceCode" id="cb184"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb184-1"><a href="#cb184-1" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.feature_selection <span class="im">import</span> mutual_info_classif</span>
+<span id="cb184-2"><a href="#cb184-2" aria-hidden="true" tabindex="-1"></a>  mutual_info_classif(X,y)</span></code></pre></div>
+</details>
+<p>MI scores are sorted in decreasing order in a datatable as
+follows:</p>
+<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb185-1"><a href="#cb185-1" aria-hidden="true" tabindex="-1"></a><span class="co"># MI scores into a dataframe</span></span>
+<span id="cb185-2"><a href="#cb185-2" aria-hidden="true" tabindex="-1"></a>miScores_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>()</span>
+<span id="cb185-3"><a href="#cb185-3" aria-hidden="true" tabindex="-1"></a>miScores_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">feature =</span> <span class="fu">names</span>(miScores_result), <span class="at">miScore =</span> <span class="fu">unlist</span>(miScores_result))</span>
+<span id="cb185-4"><a href="#cb185-4" aria-hidden="true" tabindex="-1"></a>miScores_df <span class="ot">&lt;-</span> miScores_df[<span class="fu">order</span>(miScores_df<span class="sc">$</span>miScore, <span class="at">decreasing =</span> <span class="cn">TRUE</span>), ]</span>
+<span id="cb185-5"><a href="#cb185-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb185-6"><a href="#cb185-6" aria-hidden="true" tabindex="-1"></a><span class="co"># MI scores from a dataframe to datatable</span></span>
+<span id="cb185-7"><a href="#cb185-7" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">max.print =</span> <span class="dv">33</span>)</span>
+<span id="cb185-8"><a href="#cb185-8" aria-hidden="true" tabindex="-1"></a>miScores_df <span class="sc">%&gt;%</span> </span>
+<span id="cb185-9"><a href="#cb185-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">33</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb185-10"><a href="#cb185-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">datatable</span>(<span class="at">options =</span> <span class="fu">list</span>(<span class="at">dom =</span> <span class="st">&#39;t&#39;</span>, </span>
+<span id="cb185-11"><a href="#cb185-11" aria-hidden="true" tabindex="-1"></a>                           <span class="at">paging =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb185-12"><a href="#cb185-12" aria-hidden="true" tabindex="-1"></a>                           <span class="at">scrollX =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb185-13"><a href="#cb185-13" aria-hidden="true" tabindex="-1"></a>                           <span class="at">scrollCollapse =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb185-14"><a href="#cb185-14" aria-hidden="true" tabindex="-1"></a>              <span class="at">rownames =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-e28b0c489d0e93a8acba" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-e28b0c489d0e93a8acba">{"x":{"filter":"none","vertical":false,"data":[["dur_hour","Total_Stops","Route3","Route2","Arrival_Time_hour","Jet Airways","Route1","IndiGo","Route4","journey_month","Arrival_Time_min","Banglore","Dep_Time_min","SpiceJet","Delhi","Cochin","journey_day","Dep_Time_hour","New Delhi","Mumbai","Hyderabad","dur_min","Chennai","Air Asia","Kolkata","Multiple carriers","GoAir","Vistara","Jet Airways Business","Route5","Air India","Multiple carriers Premium economy","Trujet"],[0.261355004168135,0.233634916900068,0.223868266255861,0.124175864170439,0.105202144793837,0.103479469591375,0.092152220464495,0.0860534723581727,0.0798147705709061,0.056565294787695,0.0465197223597853,0.0406360582337199,0.0394303949645028,0.0376607721641658,0.0369051124829302,0.0369051124829302,0.0285882080437272,0.0264735170236768,0.0185448535812003,0.0184930792933541,0.0184930792933541,0.0182942814312308,0.0140977556933883,0.0115080603371806,0.0107715683234394,0.00651499817620216,0.00645218901576189,0.00579105123596144,0.0044505328236,0.00318558048899312,0.00190342972834205,0.00107909994604733,5.39072793377471e-05]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>feature<\/th>\n      <th>miScore<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","paging":false,"scrollX":true,"scrollCollapse":true,"columnDefs":[{"className":"dt-right","targets":1}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<details>
+<summary>
+Python code
+</summary>
+<div class="sourceCode" id="cb186"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb186-1"><a href="#cb186-1" aria-hidden="true" tabindex="-1"></a>  imp <span class="op">=</span> pd.DataFrame(mutual_info_classif(X,y),index<span class="op">=</span>X.columns)</span>
+<span id="cb186-2"><a href="#cb186-2" aria-hidden="true" tabindex="-1"></a>  imp</span>
+<span id="cb186-3"><a href="#cb186-3" aria-hidden="true" tabindex="-1"></a>  imp.columns<span class="op">=</span>[<span class="st">&#39;importance&#39;</span>]</span>
+<span id="cb186-4"><a href="#cb186-4" aria-hidden="true" tabindex="-1"></a>  imp.sort_values(by<span class="op">=</span><span class="st">&#39;importance&#39;</span>,ascending<span class="op">=</span><span class="va">False</span>)</span></code></pre></div>
+</details>
+<p>The results of MI scores slightly differ from the values obtained
+while using Python. It shows that duration in hours
+<code>dur_hour</code>, total number of stops <code>Total_Stops</code>,
+<code>Route3</code> and <code>Route2</code> variables are the most
+significant. It was expected that top features would be
+<code>Route3</code>, <code>Route2</code>, <code>Total_Stops</code> and
+<code>Route1</code>. Obtained MI scores also showed that
+<code>Vistara Premium Economy</code>, <code>Trujet</code>,
+<code>Multiple carriers</code>, are the least significant, however
+scoring above 0. It was expected that <code>Jet Airways Business</code>
+and <code>Trujet</code> would get MI score equal to 0, followed by
+<code>Vistara Premium Economy</code>, <code>Multiple carriers</code>,
+<code>GoAir</code> with the smallest scores. However, the differences do
+not change the overall assessment of features importance for further
+modelling. All features remain.</p>
 </div>
 <div id="models" class="section level2">
 <h2>Models</h2>
+<p>Various Machine Learning models were trained and tested on the
+preprocessed dataset in order to predict the flight prices between given
+destinations. For the purpose of reproducing the base project, Logistic
+Regression, K-nearest Neighbors Regression, Decision Tree, Gradient
+Boosting models were used to solve the regression problem.</p>
+<p>Firstly, the dataset was split into train and test samples in
+proportion 80% - 20% according to the standard procedure.</p>
+<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="#cb187-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set random seed for reproducibility</span></span>
+<span id="cb187-2"><a href="#cb187-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb187-3"><a href="#cb187-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb187-4"><a href="#cb187-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Load library</span></span>
+<span id="cb187-5"><a href="#cb187-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb187-6"><a href="#cb187-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb187-7"><a href="#cb187-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Split the dataset into train and test samples</span></span>
+<span id="cb187-8"><a href="#cb187-8" aria-hidden="true" tabindex="-1"></a>train_indices <span class="ot">&lt;-</span> <span class="fu">createDataPartition</span>(y, <span class="at">times =</span> <span class="dv">1</span>, <span class="at">p =</span> <span class="fl">0.8</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb187-9"><a href="#cb187-9" aria-hidden="true" tabindex="-1"></a>X_train <span class="ot">&lt;-</span> X[train_indices, ]</span>
+<span id="cb187-10"><a href="#cb187-10" aria-hidden="true" tabindex="-1"></a>X_test <span class="ot">&lt;-</span> X[<span class="sc">-</span>train_indices, ]</span>
+<span id="cb187-11"><a href="#cb187-11" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">&lt;-</span> y[train_indices]</span>
+<span id="cb187-12"><a href="#cb187-12" aria-hidden="true" tabindex="-1"></a>y_test <span class="ot">&lt;-</span> y[<span class="sc">-</span>train_indices]</span></code></pre></div>
+<details>
+<summary>
+Python code
+</summary>
+<div class="sourceCode" id="cb188"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb188-1"><a href="#cb188-1" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb188-2"><a href="#cb188-2" aria-hidden="true" tabindex="-1"></a>  X_train,X_test,y_train,y_test <span class="op">=</span> train_test_split(X,y,test_size<span class="op">=</span><span class="fl">0.20</span>,random_state<span class="op">=</span><span class="dv">123</span>)</span></code></pre></div>
+</details>
+<p>Further, two function for modeling were created based on the
+<em>caret</em> package. <code>train_predict</code> function fits the
+model to the training data within the selected method (LR, KNN, DT, GDB,
+etc.), make predictions on the test data and returns them.</p>
+<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb189-1"><a href="#cb189-1" aria-hidden="true" tabindex="-1"></a>train_predict <span class="ot">&lt;-</span> <span class="cf">function</span>(method, X_train, y_train, X_test) {</span>
+<span id="cb189-2"><a href="#cb189-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fit the model on the training data</span></span>
+<span id="cb189-3"><a href="#cb189-3" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">&lt;-</span> <span class="fu">train</span>(<span class="at">x =</span> X_train, <span class="at">y =</span> y_train, <span class="at">method =</span> method)</span>
+<span id="cb189-4"><a href="#cb189-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb189-5"><a href="#cb189-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Make predictions on the test data</span></span>
+<span id="cb189-6"><a href="#cb189-6" aria-hidden="true" tabindex="-1"></a>  predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, <span class="at">newdata =</span> X_test)</span>
+<span id="cb189-7"><a href="#cb189-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb189-8"><a href="#cb189-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Return predictions</span></span>
+<span id="cb189-9"><a href="#cb189-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(predictions)</span>
+<span id="cb189-10"><a href="#cb189-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><code>calculate_metrics</code> aggregates measurement metrics of a
+model based on the predictions. These are: R-squared, Mean Absolute
+Error (MAE), Mean Squared Error (MSE) and Root Mean Squared Error
+(RMSE).</p>
+<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb190-1"><a href="#cb190-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load library</span></span>
+<span id="cb190-2"><a href="#cb190-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Metrics)</span>
+<span id="cb190-3"><a href="#cb190-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb190-4"><a href="#cb190-4" aria-hidden="true" tabindex="-1"></a>calculate_metrics <span class="ot">&lt;-</span> <span class="cf">function</span>(predictions, y_test) {</span>
+<span id="cb190-5"><a href="#cb190-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb190-6"><a href="#cb190-6" aria-hidden="true" tabindex="-1"></a>  r2score <span class="ot">&lt;-</span> <span class="fu">R2</span>(predictions, y_test)</span>
+<span id="cb190-7"><a href="#cb190-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;R-squared score:&quot;</span>, r2score))</span>
+<span id="cb190-8"><a href="#cb190-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb190-9"><a href="#cb190-9" aria-hidden="true" tabindex="-1"></a>  mae <span class="ot">&lt;-</span> <span class="fu">MAE</span>(predictions, y_test)</span>
+<span id="cb190-10"><a href="#cb190-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Mean Absolute Error:&quot;</span>, mae))</span>
+<span id="cb190-11"><a href="#cb190-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb190-12"><a href="#cb190-12" aria-hidden="true" tabindex="-1"></a>  mse <span class="ot">&lt;-</span> <span class="fu">mean</span>((y_test <span class="sc">-</span> predictions)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb190-13"><a href="#cb190-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Mean Squared Error:&quot;</span>, mse))</span>
+<span id="cb190-14"><a href="#cb190-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb190-15"><a href="#cb190-15" aria-hidden="true" tabindex="-1"></a>  rmse <span class="ot">&lt;-</span> <span class="fu">RMSE</span>(predictions, y_test)</span>
+<span id="cb190-16"><a href="#cb190-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Root Mean Squared Error:&quot;</span>, rmse))</span>
+<span id="cb190-17"><a href="#cb190-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<details>
+<summary>
+Python code
+</summary>
+<div class="sourceCode" id="cb191"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb191-1"><a href="#cb191-1" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.metrics <span class="im">import</span> r2_score,mean_absolute_error,mean_squared_error</span>
+<span id="cb191-2"><a href="#cb191-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> predict(ml_model):</span>
+<span id="cb191-3"><a href="#cb191-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&#39;Model is: </span><span class="sc">{}</span><span class="st">&#39;</span>.<span class="bu">format</span>(ml_model))</span>
+<span id="cb191-4"><a href="#cb191-4" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span> ml_model.fit(X_train,y_train)</span>
+<span id="cb191-5"><a href="#cb191-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Training score: </span><span class="sc">{}</span><span class="st">&quot;</span>.<span class="bu">format</span>(model.score(X_train,y_train)))</span>
+<span id="cb191-6"><a href="#cb191-6" aria-hidden="true" tabindex="-1"></a>    predictions <span class="op">=</span> model.predict(X_test)</span>
+<span id="cb191-7"><a href="#cb191-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Predictions are: </span><span class="sc">{}</span><span class="st">&quot;</span>.<span class="bu">format</span>(predictions))</span>
+<span id="cb191-8"><a href="#cb191-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb191-9"><a href="#cb191-9" aria-hidden="true" tabindex="-1"></a>    r2score<span class="op">=</span>r2_score(y_test,predictions) </span>
+<span id="cb191-10"><a href="#cb191-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;r2 score is: </span><span class="sc">{}</span><span class="st">&quot;</span>.<span class="bu">format</span>(r2score))</span>
+<span id="cb191-11"><a href="#cb191-11" aria-hidden="true" tabindex="-1"></a>          </span>
+<span id="cb191-12"><a href="#cb191-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&#39;MAE:</span><span class="sc">{}</span><span class="st">&#39;</span>.<span class="bu">format</span>(mean_absolute_error(y_test,predictions)))</span>
+<span id="cb191-13"><a href="#cb191-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&#39;MSE:</span><span class="sc">{}</span><span class="st">&#39;</span>.<span class="bu">format</span>(mean_squared_error(y_test,predictions)))</span>
+<span id="cb191-14"><a href="#cb191-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&#39;RMSE:</span><span class="sc">{}</span><span class="st">&#39;</span>.<span class="bu">format</span>(np.sqrt(mean_squared_error(y_test,predictions))))</span>
+<span id="cb191-15"><a href="#cb191-15" aria-hidden="true" tabindex="-1"></a>     </span>
+<span id="cb191-16"><a href="#cb191-16" aria-hidden="true" tabindex="-1"></a>    sns.distplot(y_test<span class="op">-</span>predictions) </span></code></pre></div>
+</details>
+<div id="logistic-regression" class="section level3">
+<h3>Logistic Regression</h3>
+<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="#cb192-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set random seed for reproducibility</span></span>
+<span id="cb192-2"><a href="#cb192-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb192-3"><a href="#cb192-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb192-4"><a href="#cb192-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Choose glm method for Logistic Regression</span></span>
+<span id="cb192-5"><a href="#cb192-5" aria-hidden="true" tabindex="-1"></a>method <span class="ot">&lt;-</span> <span class="st">&quot;glm&quot;</span></span>
+<span id="cb192-6"><a href="#cb192-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb192-7"><a href="#cb192-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Train and test model to obtain predictions</span></span>
+<span id="cb192-8"><a href="#cb192-8" aria-hidden="true" tabindex="-1"></a>predictions_lm <span class="ot">&lt;-</span> <span class="fu">train_predict</span>(method, X_train, y_train, X_test)</span></code></pre></div>
+<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="#cb193-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate measurement metrics of the LR model</span></span>
+<span id="cb193-2"><a href="#cb193-2" aria-hidden="true" tabindex="-1"></a><span class="fu">calculate_metrics</span>(predictions_lm, y_test)</span></code></pre></div>
+<pre><code>## [1] &quot;R-squared score: 0.627986478415997&quot;
+## [1] &quot;Mean Absolute Error: 1976.99283098505&quot;
+## [1] &quot;Mean Squared Error: 8085397.50718096&quot;
+## [1] &quot;Root Mean Squared Error: 2843.48334040855&quot;</code></pre>
+<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="#cb195-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the distribution of residuals</span></span>
+<span id="cb195-2"><a href="#cb195-2" aria-hidden="true" tabindex="-1"></a>residuals_lm <span class="ot">&lt;-</span> y_test <span class="sc">-</span> predictions_lm</span>
+<span id="cb195-3"><a href="#cb195-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb195-4"><a href="#cb195-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a dataframe with the residuals</span></span>
+<span id="cb195-5"><a href="#cb195-5" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">residuals =</span> residuals_lm)</span>
+<span id="cb195-6"><a href="#cb195-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb195-7"><a href="#cb195-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the histogram of residuals</span></span>
+<span id="cb195-8"><a href="#cb195-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> residuals, <span class="at">y =</span> ..density..)) <span class="sc">+</span></span>
+<span id="cb195-9"><a href="#cb195-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">fill =</span> <span class="st">&quot;lightblue&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">color =</span> <span class="st">&quot;lightblue&quot;</span>, <span class="at">bins =</span> <span class="dv">100</span>) <span class="sc">+</span></span>
+<span id="cb195-10"><a href="#cb195-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">&quot;darkblue&quot;</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb195-11"><a href="#cb195-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Residuals Distribution Logistic Regression&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Price&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Density&quot;</span>) <span class="sc">+</span></span>
+<span id="cb195-12"><a href="#cb195-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb195-13"><a href="#cb195-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">&quot;white&quot;</span>))</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<details>
+<summary>
+Python code
+</summary>
+<div class="sourceCode" id="cb196"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb196-1"><a href="#cb196-1" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb196-2"><a href="#cb196-2" aria-hidden="true" tabindex="-1"></a>  predict(LogisticRegression()) </span>
+<span id="cb196-3"><a href="#cb196-3" aria-hidden="true" tabindex="-1"></a>  sns.distplot(y_test<span class="op">-</span>predictions) </span></code></pre></div>
+</details>
+<p>The results obtained by the Logistic Regression model in this study
+varies from the results from the base project, therefore it was not
+possible to obtain full reproducibility. More specifically, R2 explains
+around 63% of the variance in the flight price, which is more than in
+the base study (44%). It suggests a reasonable level of variance
+explained by the model, while the MAE, MSE, and RMSE values are lower in
+this study than in the base, which proves that less prediction errors
+and better overall model performance than expected.</p>
 </div>
+<div id="k-nearest-neighbors-regression" class="section level3">
+<h3>K-nearest Neighbors Regression</h3>
+<div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb197-1"><a href="#cb197-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set random seed for reproducibility</span></span>
+<span id="cb197-2"><a href="#cb197-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb197-3"><a href="#cb197-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb197-4"><a href="#cb197-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Choose knn method for K-nearest Neighbors Regression</span></span>
+<span id="cb197-5"><a href="#cb197-5" aria-hidden="true" tabindex="-1"></a>method <span class="ot">&lt;-</span> <span class="st">&quot;knn&quot;</span></span>
+<span id="cb197-6"><a href="#cb197-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb197-7"><a href="#cb197-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Train and test model to obtain predictions</span></span>
+<span id="cb197-8"><a href="#cb197-8" aria-hidden="true" tabindex="-1"></a>predictions_knn <span class="ot">&lt;-</span> <span class="fu">train_predict</span>(method, X_train, y_train, X_test)</span></code></pre></div>
+<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb198-1"><a href="#cb198-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate measurement metrics of the KNN model</span></span>
+<span id="cb198-2"><a href="#cb198-2" aria-hidden="true" tabindex="-1"></a><span class="fu">calculate_metrics</span>(predictions_knn, y_test)</span></code></pre></div>
+<pre><code>## [1] &quot;R-squared score: 0.618747121893646&quot;
+## [1] &quot;Mean Absolute Error: 1815.50187207276&quot;
+## [1] &quot;Mean Squared Error: 8298605.93131841&quot;
+## [1] &quot;Root Mean Squared Error: 2880.73010386576&quot;</code></pre>
+<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb200-1"><a href="#cb200-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the distribution of residuals</span></span>
+<span id="cb200-2"><a href="#cb200-2" aria-hidden="true" tabindex="-1"></a>residuals_knn <span class="ot">&lt;-</span> y_test <span class="sc">-</span> predictions_knn</span>
+<span id="cb200-3"><a href="#cb200-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb200-4"><a href="#cb200-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data frame with the residuals</span></span>
+<span id="cb200-5"><a href="#cb200-5" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">residuals =</span> residuals_knn)</span>
+<span id="cb200-6"><a href="#cb200-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb200-7"><a href="#cb200-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the histogram of residuals</span></span>
+<span id="cb200-8"><a href="#cb200-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> residuals, <span class="at">y =</span> ..density..)) <span class="sc">+</span></span>
+<span id="cb200-9"><a href="#cb200-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">fill =</span> <span class="st">&quot;lightblue&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">color =</span> <span class="st">&quot;lightblue&quot;</span>, <span class="at">bins =</span> <span class="dv">100</span>) <span class="sc">+</span></span>
+<span id="cb200-10"><a href="#cb200-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">&quot;darkblue&quot;</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb200-11"><a href="#cb200-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Residuals Distribution KNN&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Price&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Density&quot;</span>) <span class="sc">+</span></span>
+<span id="cb200-12"><a href="#cb200-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb200-13"><a href="#cb200-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">&quot;white&quot;</span>))</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<details>
+<summary>
+Python code
+</summary>
+<div class="sourceCode" id="cb201"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb201-1"><a href="#cb201-1" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.linear_model <span class="im">import</span> KNeighborsRegressor</span>
+<span id="cb201-2"><a href="#cb201-2" aria-hidden="true" tabindex="-1"></a>  predict(KNeighborsRegressor())</span>
+<span id="cb201-3"><a href="#cb201-3" aria-hidden="true" tabindex="-1"></a>  sns.distplot(y_test<span class="op">-</span>predictions)</span></code></pre></div>
+</details>
+<p>The results obtained by the K-nearest Neighbors Regression model in
+this study varies from the results from the base project, therefore it
+was not possible to obtain full reproducibility. However, this time the
+reproduced model underperformed compared to the base model. The R2 value
+explains around 62% of the variance in the flight price, which is
+slightly lower than expected (65%). This indicates that the model
+performs worse in capturing and explaining the variation in the target
+variable. Therefore, MAE, MSE, and RMSE values are higher in this study
+compared to the base, indicating no reduction in prediction errors. It
+is worth mentioning that the differences between reprocuded and the
+original model are minor.</p>
+</div>
+<div id="decision-tree" class="section level3">
+<h3>Decision Tree</h3>
+<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb202-1"><a href="#cb202-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set random seed for reproducibility</span></span>
+<span id="cb202-2"><a href="#cb202-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb202-3"><a href="#cb202-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb202-4"><a href="#cb202-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Choose rpart method for Decision Tree</span></span>
+<span id="cb202-5"><a href="#cb202-5" aria-hidden="true" tabindex="-1"></a>method <span class="ot">&lt;-</span> <span class="st">&quot;rpart&quot;</span></span>
+<span id="cb202-6"><a href="#cb202-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb202-7"><a href="#cb202-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Train and test model to obtain predictions</span></span>
+<span id="cb202-8"><a href="#cb202-8" aria-hidden="true" tabindex="-1"></a>predictions_dt <span class="ot">&lt;-</span> <span class="fu">train_predict</span>(method, X_train, y_train, X_test)</span></code></pre></div>
+<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate measurement metrics of the DT model</span></span>
+<span id="cb203-2"><a href="#cb203-2" aria-hidden="true" tabindex="-1"></a><span class="fu">calculate_metrics</span>(predictions_dt, y_test)</span></code></pre></div>
+<pre><code>## [1] &quot;R-squared score: 0.462644415669897&quot;
+## [1] &quot;Mean Absolute Error: 2313.25750049726&quot;
+## [1] &quot;Mean Squared Error: 11677042.9283385&quot;
+## [1] &quot;Root Mean Squared Error: 3417.16884691678&quot;</code></pre>
+<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="#cb205-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the distribution of residuals</span></span>
+<span id="cb205-2"><a href="#cb205-2" aria-hidden="true" tabindex="-1"></a>residuals_dt <span class="ot">&lt;-</span> y_test <span class="sc">-</span> predictions_dt</span>
+<span id="cb205-3"><a href="#cb205-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb205-4"><a href="#cb205-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data frame with the residuals</span></span>
+<span id="cb205-5"><a href="#cb205-5" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">residuals =</span> residuals_dt)</span>
+<span id="cb205-6"><a href="#cb205-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb205-7"><a href="#cb205-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the histogram of residuals</span></span>
+<span id="cb205-8"><a href="#cb205-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> residuals, <span class="at">y =</span> ..density..)) <span class="sc">+</span></span>
+<span id="cb205-9"><a href="#cb205-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">fill =</span> <span class="st">&quot;lightblue&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">color =</span> <span class="st">&quot;lightblue&quot;</span>, <span class="at">bins =</span> <span class="dv">100</span>) <span class="sc">+</span></span>
+<span id="cb205-10"><a href="#cb205-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">&quot;darkblue&quot;</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb205-11"><a href="#cb205-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Residuals Distribution Decision Tree&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Price&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Density&quot;</span>) <span class="sc">+</span></span>
+<span id="cb205-12"><a href="#cb205-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb205-13"><a href="#cb205-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">&quot;white&quot;</span>))</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<details>
+<summary>
+Python code
+</summary>
+<div class="sourceCode" id="cb206"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb206-1"><a href="#cb206-1" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.linear_model <span class="im">import</span> DecisionTreeRegressor</span>
+<span id="cb206-2"><a href="#cb206-2" aria-hidden="true" tabindex="-1"></a>  predict(predict(DecisionTreeRegressor())</span>
+<span id="cb206-3"><a href="#cb206-3" aria-hidden="true" tabindex="-1"></a>  sns.distplot(y_test<span class="op">-</span>predictions) </span></code></pre></div>
+</details>
+<p>The results obtained by the Decision Tree model in this study
+significantly deviate from the base project, leading to challenges in
+achieving full reproducibility. The reproduced model demonstrates
+inferior performance compared to the base model, as indicated by a low
+R2 value of around 46%, failing to effectively capture and explain the
+variation in the flight price (expected 74%). Moreover, the reproduced
+model exhibits higher MAE, MSE, and RMSE values, suggesting an inability
+to reduce prediction errors. It is evident that the reproduced Decision
+Tree model falls short in terms of accuracy and performance. These
+disparities may stem from variations in data preprocessing, feature
+selection, or model hyperparameters.</p>
+</div>
+<div id="gradient-boosting" class="section level3">
+<h3>Gradient Boosting</h3>
+<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="#cb207-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate measurement metrics of the GDB model</span></span>
+<span id="cb207-2"><a href="#cb207-2" aria-hidden="true" tabindex="-1"></a><span class="fu">calculate_metrics</span>(predictions_gbm, y_test)</span></code></pre></div>
+<pre><code>## [1] &quot;R-squared score: 0.75160359107612&quot;
+## [1] &quot;Mean Absolute Error: 1552.83251368553&quot;
+## [1] &quot;Mean Squared Error: 5465010.45874706&quot;
+## [1] &quot;Root Mean Squared Error: 2337.73618245239&quot;</code></pre>
+<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="#cb209-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the distribution of residuals</span></span>
+<span id="cb209-2"><a href="#cb209-2" aria-hidden="true" tabindex="-1"></a>residuals_gbm <span class="ot">&lt;-</span> y_test <span class="sc">-</span> predictions_gbm</span>
+<span id="cb209-3"><a href="#cb209-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb209-4"><a href="#cb209-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data frame with the residuals</span></span>
+<span id="cb209-5"><a href="#cb209-5" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">residuals =</span> residuals_gbm)</span>
+<span id="cb209-6"><a href="#cb209-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb209-7"><a href="#cb209-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the histogram of residuals</span></span>
+<span id="cb209-8"><a href="#cb209-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> residuals, <span class="at">y =</span> ..density..)) <span class="sc">+</span></span>
+<span id="cb209-9"><a href="#cb209-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">fill =</span> <span class="st">&quot;lightblue&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">color =</span> <span class="st">&quot;lightblue&quot;</span>, <span class="at">bins =</span> <span class="dv">100</span>) <span class="sc">+</span></span>
+<span id="cb209-10"><a href="#cb209-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">&quot;darkblue&quot;</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb209-11"><a href="#cb209-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Residuals Distribution Gradient Boosting&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Price&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Density&quot;</span>) <span class="sc">+</span></span>
+<span id="cb209-12"><a href="#cb209-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb209-13"><a href="#cb209-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">&quot;white&quot;</span>))</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<details>
+<summary>
+Python code
+</summary>
+<div class="sourceCode" id="cb210"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb210-1"><a href="#cb210-1" aria-hidden="true" tabindex="-1"></a>  <span class="im">from</span> sklearn.linear_model <span class="im">import</span> GradientBoostingRegressor</span>
+<span id="cb210-2"><a href="#cb210-2" aria-hidden="true" tabindex="-1"></a>  predict(GradientBoostingRegressor())</span>
+<span id="cb210-3"><a href="#cb210-3" aria-hidden="true" tabindex="-1"></a>  sns.distplot(y_test<span class="op">-</span>predictions) </span></code></pre></div>
+</details>
+<p>The reproduced Gradient Boosting model deviates slightly from the
+base project, resulting in inferior performance. The R2 value, which
+explains the variance in flight prices, is equal to 75%, a bit lower
+than the expected 81%. Additionally, higher values of MAE, MSE, and RMSE
+indicate increased prediction errors. These differences are minor.
+Overall, the performance of Gradient Boosting model was the best
+compared to other models, which was expected from the base paper. The
+main insight and conclusion from the study was reproduced
+successfully.</p>
+</div>
+</div>
+<div id="extended-models" class="section level1">
+<h1>Extended models</h1>
+<p>As an extension to the selected base models, this study propose
+another Machine Learning algorithms for flight price predictions, such
+as:</p>
 <div id="hypertunning-the-model" class="section level2">
 <h2>Hypertunning the model</h2>
+</div>
 </div>
 </section>
 
