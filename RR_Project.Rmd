@@ -29,8 +29,13 @@ details summary {
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+## Introduction
+
 This is an RMarkdown presentation that serves as a final project for the course Reproducible Research.\
+
 The project's topic involves transcribing a ready-made [Python notebook](https://www.kaggle.com/code/anshigupta01/flight-price-prediction/notebook?fbclid=IwAR2vtpE8xwc7nhPqDwdEiwwImw62_XuIxTgEkG0Qo2OCCyHIONRIv7DD3pM), downloaded from the Kaggle platform, into R.\
+
 Additionally, the analysis will be expanded to include an additional machine learning model.\
 In order to make this project reproducible, we utilize the `dotenv` package to store the environment state.
 
@@ -41,6 +46,14 @@ Team members:
 - Robert Kowalczyk
 - Szymon Socha
 - Karolina Szczęsna
+
+
+## Comments on reproducibility
+
+Overall, the main goal of this project, therefore reproducing the aforementioned notebook from Python to R, was reached. However, it is worth mentioning that some challenges were encountered, while reproducing the project to a different programming language. Firstly, the original code lacked specific comments and detailed descriptions of the steps in the notebook (plot descriptions, argumentation to choose certain models etc.). Our project has been expanded to include this. The original code had mistakes and was not optimal, specifically in Preprocessing part. While transcribing the notebook to R, certain code snippets were cleaned and optimized to be more readable and efficient. Another challenge that occurred was the difference in results for selected models. In most cases the measurement metrics did not varied significantly, however the distribution of residuals proved more prediction errors than expected.
+
+One of the potential cause of subtle differences in results is the fact that Python and R are different programming languages with their own syntax, libraries, and conventions. Translating code from one language to another can introduce some variances, especially when it comes to functions, data structures, and library-specific implementations. These differences could affect the overall behavior of the code. Other than that, different  libraries in Python and R have different default hyperparameters for machine learning models, leading to variations in the trained models and their predictions.
+
 
 ```{r}
 suppressPackageStartupMessages(library(tidyverse))
