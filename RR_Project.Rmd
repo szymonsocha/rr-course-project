@@ -960,7 +960,10 @@ Feature selection involves identifying the optimal feature and establishing a st
 Firstly, the dataset is divided into X and y columns for further modeling purposes.
 
 ```{r message=FALSE, warning=FALSE}
+# Extract all columns but Price as X
 X <- final_df[, !(names(final_df) == "Price")]
+
+# Extract Price column as y
 y <- df$Price
 ```
 
@@ -976,10 +979,14 @@ Suggested approach for feature importance in the base study was Mutual Informati
 
 
 ```{r, message=FALSE, warning=FALSE}
+# Load library
 library(praznik)
+
+# Calculate Mutual Information of variables
 miScores_result <- miScores(X, y, threads = 0)
 miScores_result
 ```
+
 
 <details>
   <summary>Python code</summary>
@@ -990,13 +997,15 @@ miScores_result
 </details>
 
 
-MI scores are sorted in decreasing order in a dataframe as follows:
+MI scores are sorted in decreasing order in a datatable as follows:
 
 ```{r, message=FALSE, warning=FALSE}
+# MI scores into a dataframe
 miScores_df <- data.frame()
 miScores_df <- data.frame(feature = names(miScores_result), miScore = unlist(miScores_result))
 miScores_df <- miScores_df[order(miScores_df$miScore, decreasing = TRUE), ]
 
+# MI scores from a dataframe to datatable
 options(max.print = 33)
 miScores_df %>% 
   head(33) %>% 
@@ -1006,6 +1015,7 @@ miScores_df %>%
                            scrollCollapse = TRUE),
               rownames = FALSE)
 ```
+
 
 
 <details>
@@ -1055,8 +1065,6 @@ y_test <- y[-train_indices]
 Further, two function for modeling were created based on the *caret* package. `train_predict` function fits the model to the training data within the selected method (LR, KNN, DT, GDB, etc.), make predictions on the test data and returns them.
 
 ```{r message=FALSE, warning=FALSE}
-library(caret)
-
 train_predict <- function(method, X_train, y_train, X_test) {
   # Fit the model on the training data
   model <- train(x = X_train, y = y_train, method = method)
@@ -1064,7 +1072,7 @@ train_predict <- function(method, X_train, y_train, X_test) {
   # Make predictions on the test data
   predictions <- predict(model, newdata = X_test)
   
-  # View the predictions
+  # Return predictions
   return(predictions)
 }
 ```
@@ -1074,6 +1082,7 @@ train_predict <- function(method, X_train, y_train, X_test) {
 
 
 ```{r message=FALSE, warning=FALSE}
+# Load library
 library(Metrics)
 
 calculate_metrics <- function(predictions, y_test) {
@@ -1119,11 +1128,18 @@ calculate_metrics <- function(predictions, y_test) {
 ### Logistic Regression
 
 ```{r message=FALSE, warning=FALSE}
+# Set random seed for reproducibility
+set.seed(123)
+
+# Choose glm method for Logistic Regression
 method <- "glm"
+
+# Train and test model to obtain predictions
 predictions_lm <- train_predict(method, X_train, y_train, X_test)
 ```
 
 ```{r message=FALSE, warning=FALSE}
+# Calculate measurement metrics of the LR model
 calculate_metrics(predictions_lm, y_test)
 ```
 
@@ -1131,7 +1147,7 @@ calculate_metrics(predictions_lm, y_test)
 # Plot the distribution of residuals
 residuals_lm <- y_test - predictions_lm
 
-# Create a data frame with the residuals
+# Create a dataframe with the residuals
 data <- data.frame(residuals = residuals_lm)
 
 # Plot the histogram of residuals
@@ -1143,6 +1159,51 @@ ggplot(data, aes(x = residuals, y = ..density..)) +
   theme(panel.background = element_rect(fill = "white"))
 ```
 
+<details>
+  <summary>Python code</summary>
+  ```python
+  from sklearn.linear_model import LogisticRegression
+  predict(LogisticRegression()) 
+  sns.distplot(y_test-predictions) 
+  ```
+</details>
+
+The results obtained by the Logistic Regression model in this study varies from the results from the base project, therefore it was not possible to obtain full reproducibility. More specifically, R2 explains around 63\% of the variance in the flight price, which is more than in the base study (44\%). It suggests a reasonable level of variance explained by the model, while the MAE, MSE, and RMSE values are lower in this study than in the base, which proves that less prediction errors and better overall model performance than expected.
+
+
+### K-nearest Neighbors Regression
+
+```{r message=FALSE, warning=FALSE}
+# Set random seed for reproducibility
+set.seed(123)
+
+# Choose knn method for K-nearest Neighbors Regression
+method <- "knn"
+
+# Train and test model to obtain predictions
+predictions_knn <- train_predict(method, X_train, y_train, X_test)
+```
+
+```{r message=FALSE, warning=FALSE}
+# Calculate measurement metrics of the KNN model
+calculate_metrics(predictions_knn, y_test)
+```
+
+```{r message=FALSE, warning=FALSE}
+# Plot the distribution of residuals
+residuals_knn <- y_test - predictions_knn
+
+# Create a data frame with the residuals
+data <- data.frame(residuals = residuals_knn)
+
+# Plot the histogram of residuals
+ggplot(data, aes(x = residuals, y = ..density..)) +
+  geom_histogram(fill = "lightblue", alpha = 0.7, color = "lightblue", bins = 100) +
+  geom_density(color = "darkblue", size = 0.5) +
+  labs(title = "Residuals Distribution KNN", x = "Price", y = "Density") +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "white"))
+```
 
 <details>
   <summary>Python code</summary>
@@ -1154,15 +1215,24 @@ ggplot(data, aes(x = residuals, y = ..density..)) +
 </details>
 
 
+The results obtained by the K-nearest Neighbors Regression model in this study varies from the results from the base project, therefore it was not possible to obtain full reproducibility. However, this time the reproduced model underperformed compared to the base model. The R2 value explains around 62% of the variance in the flight price, which is slightly lower than expected (65\%). This indicates that the model performs worse in capturing and explaining the variation in the target variable. Therefore, MAE, MSE, and RMSE values are higher in this study compared to the base, indicating no reduction in prediction errors. It is worth mentioning that the differences between reprocuded and the original model are minor.
+
 
 ### Decision Tree
 
 ```{r message=FALSE, warning=FALSE}
+# Set random seed for reproducibility
+set.seed(123)
+
+# Choose rpart method for Decision Tree
 method <- "rpart"
+
+# Train and test model to obtain predictions
 predictions_dt <- train_predict(method, X_train, y_train, X_test)
 ```
 
 ```{r message=FALSE, warning=FALSE}
+# Calculate measurement metrics of the DT model
 calculate_metrics(predictions_dt, y_test)
 ```
 
@@ -1182,15 +1252,35 @@ ggplot(data, aes(x = residuals, y = ..density..)) +
   theme(panel.background = element_rect(fill = "white"))
 ```
 
+<details>
+  <summary>Python code</summary>
+  ```python
+  from sklearn.linear_model import DecisionTreeRegressor
+  predict(predict(DecisionTreeRegressor())
+  sns.distplot(y_test-predictions) 
+  ```
+</details>
+
+
+The results obtained by the Decision Tree model in this study significantly deviate from the base project, leading to challenges in achieving full reproducibility. The reproduced model demonstrates inferior performance compared to the base model, as indicated by a low R2 value of around 46%, failing to effectively capture and explain the variation in the flight price (expected 74\%). Moreover, the reproduced model exhibits higher MAE, MSE, and RMSE values, suggesting an inability to reduce prediction errors. It is evident that the reproduced Decision Tree model falls short in terms of accuracy and performance. These disparities may stem from variations in data preprocessing, feature selection, or model hyperparameters.
+
+
 
 ### Gradient Boosting
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+# Set random seed for reproducibility
+set.seed(123)
+
+# Choose gbm method for Gradient Boosting
 method <- "gbm"
+
+# Train and test model to obtain predictions
 predictions_gbm <- train_predict(method, X_train, y_train, X_test)
 ```
 
 ```{r message=FALSE, warning=FALSE}
+# Calculate measurement metrics of the GDB model
 calculate_metrics(predictions_gbm, y_test)
 ```
 
@@ -1210,45 +1300,24 @@ ggplot(data, aes(x = residuals, y = ..density..)) +
   theme(panel.background = element_rect(fill = "white"))
 ```
 
+<details>
+  <summary>Python code</summary>
+  ```python
+  from sklearn.linear_model import GradientBoostingRegressor
+  predict(GradientBoostingRegressor())
+  sns.distplot(y_test-predictions) 
+  ```
+</details>
 
-### Random Forest
 
-### SVM
+The reproduced Gradient Boosting model deviates slightly from the base project, resulting in inferior performance. The R2 value, which explains the variance in flight prices, is equal to 75%, a bit lower than the expected 81%. Additionally, higher values of MAE, MSE, and RMSE indicate increased prediction errors. These differences are minor. Overall, the performance of Gradient Boosting model was the best compared to other models, which was expected from the base paper. The main insight and conclusion from the study was reproduced successfully.
 
 
-## Hypertunning the model
+# Extended models
 
-Another Feature Importance technique was proposed using *caret* package - Learning Vector Quantization (LVQ) model.
+As an extension to the selected base models, this study propose another Machine Learning algorithms for flight price predictions, such as: 
 
-```{r message=FALSE, warning=FALSE}
-# Load the library
-library(mlbench)
-library(caret)
 
-control <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
 
-# Train the model
-model <- train(y ~ ., data = data.frame(X, y), method = "lm", preProcess = "scale", trControl = control)
-
-# Estimate variable importance
-importance <- varImp(model, scale = FALSE)
-
-# Extract variable names and importance scores
-variable_names <- rownames(importance$importance)
-importance_scores <- importance$importance[, "Overall"]
-
-# Create data frame
-importance_df <- data.frame(Variable = variable_names, Importance = importance_scores)
-importance_df <- importance_df[order(importance_df$Importance, decreasing = TRUE), ]
-
-# Summarize importance in a datatable
-options(max.print = 33)
-datatable(importance_df, options = list(dom = 't',
-                                        paging = FALSE,
-                                        scrollX = TRUE,
-                                        scrollCollapse = TRUE),
-          rownames = FALSE)
-
-```
 
 ## Hypertunning the model
