@@ -1036,7 +1036,7 @@ The results of MI scores slightly differ from the values obtained while using Py
 
 Various Machine Learning models were trained and tested on the preprocessed dataset in order to predict the flight prices between given destinations. For the purpose of reproducing the base project, Logistic Regression, K-nearest Neighbors Regression, Decision Tree, Gradient Boosting models were used to solve the regression problem.
 
-Firstly, the dataset was split into train and test samples in proportion 80\% - 20\% according to the standard procedure. 
+Firstly, the dataset was split into train and test samples in proportion 80% - 20% according to the standard procedure. 
 
 ```{r message=FALSE, warning=FALSE}
 # Set random seed for reproducibility
@@ -1168,7 +1168,7 @@ ggplot(data, aes(x = residuals, y = ..density..)) +
   ```
 </details>
 
-The results obtained by the Logistic Regression model in this study varies from the results from the base project, therefore it was not possible to obtain full reproducibility. More specifically, R2 explains around 63\% of the variance in the flight price, which is more than in the base study (44\%). It suggests a reasonable level of variance explained by the model, while the MAE, MSE, and RMSE values are lower in this study than in the base, which proves that less prediction errors and better overall model performance than expected.
+The results obtained by the Logistic Regression model in this study varies from the results from the base project, therefore it was not possible to obtain full reproducibility. More specifically, R2 explains around 63% of the variance in the flight price, which is more than in the base study (44%). It suggests a reasonable level of variance explained by the model, while the MAE, MSE, and RMSE values are lower in this study than in the base, which proves that less prediction errors and better overall model performance than expected.
 
 
 ### K-nearest Neighbors Regression
@@ -1215,7 +1215,7 @@ ggplot(data, aes(x = residuals, y = ..density..)) +
 </details>
 
 
-The results obtained by the K-nearest Neighbors Regression model in this study varies from the results from the base project, therefore it was not possible to obtain full reproducibility. However, this time the reproduced model underperformed compared to the base model. The R2 value explains around 62% of the variance in the flight price, which is slightly lower than expected (65\%). This indicates that the model performs worse in capturing and explaining the variation in the target variable. Therefore, MAE, MSE, and RMSE values are higher in this study compared to the base, indicating no reduction in prediction errors. It is worth mentioning that the differences between reprocuded and the original model are minor.
+The results obtained by the K-nearest Neighbors Regression model in this study varies from the results from the base project, therefore it was not possible to obtain full reproducibility. However, this time the reproduced model underperformed compared to the base model. The R2 value explains around 62% of the variance in the flight price, which is slightly lower than expected (65%). This indicates that the model performs worse in capturing and explaining the variation in the target variable. Therefore, MAE, MSE, and RMSE values are higher in this study compared to the base, indicating no reduction in prediction errors. It is worth mentioning that the differences between reprocuded and the original model are minor.
 
 
 ### Decision Tree
@@ -1262,7 +1262,7 @@ ggplot(data, aes(x = residuals, y = ..density..)) +
 </details>
 
 
-The results obtained by the Decision Tree model in this study significantly deviate from the base project, leading to challenges in achieving full reproducibility. The reproduced model demonstrates inferior performance compared to the base model, as indicated by a low R2 value of around 46%, failing to effectively capture and explain the variation in the flight price (expected 74\%). Moreover, the reproduced model exhibits higher MAE, MSE, and RMSE values, suggesting an inability to reduce prediction errors. It is evident that the reproduced Decision Tree model falls short in terms of accuracy and performance. These disparities may stem from variations in data preprocessing, feature selection, or model hyperparameters.
+The results obtained by the Decision Tree model in this study significantly deviate from the base project, leading to challenges in achieving full reproducibility. The reproduced model demonstrates inferior performance compared to the base model, as indicated by a low R2 value of around 46%, failing to effectively capture and explain the variation in the flight price (expected 74%). Moreover, the reproduced model exhibits higher MAE, MSE, and RMSE values, suggesting an inability to reduce prediction errors. It is evident that the reproduced Decision Tree model falls short in terms of accuracy and performance. These disparities may stem from variations in data preprocessing, feature selection, or model hyperparameters.
 
 
 
