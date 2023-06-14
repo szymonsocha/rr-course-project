@@ -632,6 +632,7 @@ ggplot(data = df, aes(x = reorder(Destination, -Price), y = Price)) +
   geom_boxplot() +
   labs(x = "Destination", y = "Price")
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -647,6 +648,7 @@ Destination <- setNames(Destination, new_names)
 
 head(Destination)
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -659,6 +661,7 @@ head(Destination)
 ```{r}
 table(categorical$Route)
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -674,6 +677,7 @@ categorical$Route3 <- sapply(strsplit(as.character(categorical$Route), "→"), "
 categorical$Route4 <- sapply(strsplit(as.character(categorical$Route), "→"), "[", 4)
 categorical$Route5 <- sapply(strsplit(as.character(categorical$Route), "→"), "[", 5)
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -693,6 +697,7 @@ categorical %>%
                            scrollX = TRUE,
                            scrollCollapse = TRUE))
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -704,6 +709,7 @@ categorical %>%
 categorical <- categorical %>% 
   select(-Route)
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -718,6 +724,7 @@ categorical %>%
                names_to = 'Variable',
                values_to = 'No. of missing values')
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -728,6 +735,7 @@ categorical %>%
 ```{r}
 categorical %>% colnames()
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -741,6 +749,7 @@ categorical <- categorical %>%
          Route4 = if_else(is.na(Route4), 'None', Route4),
          Route5 = if_else(is.na(Route5), 'None', Route5))
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -757,6 +766,7 @@ categorical %>%
                names_to = 'Variable',
                values_to = 'No. of missing values')
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -769,6 +779,7 @@ for (i in names(categorical)) {
   cat(paste0(i, " has total ", length(unique(categorical[[i]])), " categories\n"))
 }
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -781,10 +792,11 @@ for (i in names(categorical)) {
 df %>% 
 ggplot(aes(x = Arrival_Time_hour, y = Price)) + 
   geom_hex(bins = 15, aes(fill = after_stat(count))) +
-  scale_fill_gradient(low = 'white', high = 'darkgreen') +
+  scale_fill_gradient(low = 'white', high = 'mediumaquamarine') +
   scale_y_continuous(breaks = seq(0, 80000, by = 10000)) +
   theme(panel.background = element_rect(fill = "white"))
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -797,6 +809,7 @@ for (i in c("Route1", "Route2", "Route3", "Route4", "Route5")){
   categorical[[i]] <- factor(categorical[[i]]) %>% as.numeric()
 }
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -812,6 +825,7 @@ for (i in c("Route1", "Route2", "Route3", "Route4", "Route5")){
 categorical %>% 
   head(5)
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -823,6 +837,7 @@ categorical %>%
 categorical <- categorical %>% 
   select(-Additional_Info)
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -836,6 +851,7 @@ categorical %>%
   select(Total_Stops) %>% 
   unique()
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -848,6 +864,7 @@ map_levels <- c('non-stop', '1 stop', '2 stops',  '3 stops', '4 stops')
 map_values <- c(0, 1, 2, 3, 4)
 categorical[['Total_Stops']] <- factor(categorical$Total_Stops, levels = map_levels, labels = map_values) %>% as.numeric() - 1
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -861,6 +878,7 @@ categorical[['Total_Stops']] <- factor(categorical$Total_Stops, levels = map_lev
 categorical %>% 
   select(Total_Stops)
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -872,6 +890,7 @@ categorical %>%
 categorical <- categorical %>% 
   select(-Source, -Destination, -Airline)
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -881,11 +900,13 @@ categorical <- categorical %>%
   ```
 </details>
 
+<span style="font-size:x-large;display:table;margin: 0 auto;">After all preprocessing, Our data is ready for the modeling</span>
 
 ```{r}
 final_df <- cbind(categorical, Airline, Source, Destination, df[continuous_col])
 final_df <- final_df[!duplicated(names(final_df))]
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -901,6 +922,7 @@ final_df %>%
                            scrollX = TRUE,
                            scrollCollapse = TRUE))
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -917,6 +939,7 @@ final_df %>%
                            scrollX = TRUE,
                            scrollCollapse = TRUE))
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -945,6 +968,7 @@ plot <- function(data, col) {
   ggarrange(p1, p2, ncol = 1, nrow = 2)
 }
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -958,6 +982,7 @@ plot <- function(data, col) {
 ```{r message=FALSE, warning=FALSE}
 plot(final_df,'Price')
 ```
+
 <details>
   <summary>Python code</summary>
   ```python
@@ -965,6 +990,31 @@ plot(final_df,'Price')
   ```
 </details>
 
+## Handling outliers:
+
+As there is some outliers in price feature,so we replace it with median.
+
+```{r}
+final_df$Price <- ifelse(final_df$Price >= 40000, median(final_df$Price), final_df$Price)
+```
+
+<details>
+  <summary>Python code</summary>
+  ```python
+  final_df['Price']=np.where(final_df['Price']>=40000,final_df['Price'].median(),final_df['Price'])
+  ```
+</details>
+
+```{r message=FALSE, warning=FALSE}
+plot(final_df,'Price')
+```
+
+<details>
+  <summary>Python code</summary>
+  ```python
+  plot(final_df,'Price')
+  ```
+</details>
 
 ## Feature Selection
 
