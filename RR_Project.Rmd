@@ -1350,9 +1350,11 @@ The results obtained by the Decision Tree model in this study significantly devi
 
 
 
+
+
 ### Gradient Boosting
 
-```{r message=FALSE, warning=FALSE, include=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='hide'}
 # Set random seed for reproducibility
 set.seed(123)
 
@@ -1440,7 +1442,7 @@ param_grid <- expand.grid(
 
 Further, the new model is trained using random search with `tuneGrid` defined before and `trControl` as train control object defined initially. The outcome is the set of the best parameters.
 
-```{r message=FALSE, warning=FALSE}
+```{r echo=TRUE, results='hide', message=FALSE, warning=FALSE}
 # Create a Random Search using the train function from the caret package
 gbm_random <- train(
   x = X_train,
@@ -1449,11 +1451,12 @@ gbm_random <- train(
   tuneGrid = param_grid,
   trControl = ctrl
 )
+```
 
+```{r message=FALSE, warning=FALSE}
 # Print the best parameters found by the random search
 print(gbm_random$bestTune)
 ```
-
 
 Based on the best parameters, new predictions are made and new measurement metrics are calculated.
 
@@ -1492,12 +1495,9 @@ As an extension to the selected base models, this study propose another Machine 
 XGBoost enhances the traditional gradient boosting algorithm by incorporating several innovative features and optimizations, resulting in improved accuracy and speed, such as: L1 and L2 regularization, tree pruning or customizable objective functions.
 
 
-```{r message=FALSE, warning=FALSE, include=FALSE}
+```{r echo=TRUE, results='hide'}
 # Set random seed for reproducibility
 set.seed(123)
-
-# Choose xgbTree method for XGBoost
-method <- "xgbTree"
 
 # Set up tuning grid with default values
 grid <- expand.grid(
@@ -1511,7 +1511,7 @@ grid <- expand.grid(
 )
 ```
 
-```{r message=FALSE, warning=FALSE, include=FALSE}
+```{r echo=TRUE, results='hide'}
 # Create a trainControl object for cross-validation
 ctrl <- trainControl(method = "none", number = 5, verboseIter = FALSE, allowParallel = FALSE)
 
@@ -1525,7 +1525,7 @@ model_xbg <- train(
 )
 ```
 
-```{r}
+```{r echo=TRUE, results='hide'}
 # Train and test model to obtain predictions
 predictions_xgb <- predict(model_xbg, newdata = X_test)
 ```
@@ -1538,4 +1538,3 @@ calculate_metrics(predictions_xgb, y_test)
 Out of all performed machine learning models, XGBoost obtained the best results, the highest R2 of value 86% and lower prediction errors.
 
 In conclusion, the best performing machine learning algorithm was XGBoost, followed by tuned Gradient Boosting Regressor.
-
