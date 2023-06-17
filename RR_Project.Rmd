@@ -1397,13 +1397,6 @@ ggplot(data, aes(x = residuals, y = ..density..)) +
 The reproduced Gradient Boosting model deviates slightly from the base project, resulting in inferior performance. The R2 value, which explains the variance in flight prices, is equal to 75%, a bit lower than the expected 81%. Additionally, higher values of MAE, MSE, and RMSE indicate increased prediction errors. These differences are minor. Overall, the performance of Gradient Boosting model was the best compared to other models, which was expected from the base paper. The main insight and conclusion from the study was reproduced successfully.
 
 
-# Extended models
-
-As an extension to the selected base models, this study propose another Machine Learning algorithms for flight price predictions, such as: 
-
-
-
-
 ## Hypertunning the model
 
 In the base study, the hypertunning was obtained using `RandomizedSearchCV` - a utility class in `scikit-learn` in Python. It performs random search hyperparameter tuning for machine learning models. It helps in finding the best combination of hyperparameters for a given model by randomly sampling from a defined parameter grid. In R, the `trainControl` object is created first to conduct cross-validation.
@@ -1490,3 +1483,59 @@ ggplot(data, aes(x = residuals, y = ..density..)) +
 ```
 
 The results of the tuned model are visible from both, the metrics, as well as the plot of residuals distribution. After customizing the model with the set of the best parameters, the R2 value in creased from 75% to 82%, which implies better explainability of the adjusted model of analyzed data. Therefore, the predictions of flight prices are more accurate. The errors, i.e. MAE, MSE, RMSE decreased, which influenced better fir of the residuals on the plot compared to the basic GDB model. Summing up, the random search hypertunning was successfull as expected from the base study. The approach was correctly reproduced into another machine learning model.
+
+
+# Extended modeling: XGBoost
+
+As an extension to the selected base models, this study propose another Machine Learning algorithm for flight price predictions, XGBoost.
+
+XGBoost enhances the traditional gradient boosting algorithm by incorporating several innovative features and optimizations, resulting in improved accuracy and speed, such as: L1 and L2 regularization, tree pruning or customizable objective functions.
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# Set random seed for reproducibility
+set.seed(123)
+
+# Choose xgbTree method for XGBoost
+method <- "xgbTree"
+
+# Set up tuning grid with default values
+grid <- expand.grid(
+  nrounds = 100,
+  max_depth = 6,
+  eta = 0.3,
+  gamma = 0,
+  colsample_bytree = 1,
+  min_child_weight = 1,
+  subsample = 1
+)
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# Create a trainControl object for cross-validation
+ctrl <- trainControl(method = "none", number = 5, verboseIter = FALSE, allowParallel = FALSE)
+
+# Train and test model to obtain predictions
+model_xbg <- train(
+  x = X_train,
+  y = y_train,
+  trControl = ctrl,
+  method = "xgbTree",
+  tuneGrid = grid
+)
+```
+
+```{r}
+# Train and test model to obtain predictions
+predictions_xgb <- predict(model_xbg, newdata = X_test)
+```
+
+```{r message=FALSE, warning=FALSE}
+# Calculate measurement metrics of the XGBoost model
+calculate_metrics(predictions_xgb, y_test)
+```
+
+Out of all performed machine learning models, XGBoost obtained the best results, the highest R2 of value 86% and lower prediction errors.
+
+In conclusion, the best performing machine learning algorithm was XGBoost, followed by tuned Gradient Boosting Regressor.
+
