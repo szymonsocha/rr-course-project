@@ -692,7 +692,7 @@ categorical$Route5 <- sapply(strsplit(as.character(categorical$Route), "→"), "
   ```
 </details>
 
-Let's take a look at our dataframe as to how zminenne Route 1 through 5 look by each intermediate destination.
+Let's take a look at our dataframe as to how variables Route 1 through 5 look by each intermediate destination.
 
 ```{r}
 categorical %>%
@@ -1039,7 +1039,7 @@ plot(final_df,'Price')
 
 ## Feature Selection
 
-Feature selection involves identifying the optimal feature and establishing a strong relationship with the independent variable.
+Feature selection involves identifying the optimal features and establishing a strong relationship with the independent variable.
 
 Firstly, the dataset is divided into X and y columns for further modeling purposes.
 
@@ -1059,7 +1059,7 @@ y <- df$Price
   ```
 </details>
 
-Suggested approach for feature importance in the base study was Mutual Information of variables, which is a measure of the similarity between two labels of the same data. There are several options in R to calculate Mutual Information - for the purpose if this project calculation or MI scores with *praznik* package is proposed.
+Suggested approach for feature importance in the base study was Mutual Information of variables, which is a measure of the similarity between two labels of the same data. There are several options in R to calculate Mutual Information - for the purpose of this project calculation or MI scores with *praznik* package is proposed.
 
 
 ```{r, message=FALSE, warning=FALSE}
@@ -1113,7 +1113,7 @@ miScores_df %>%
 </details>
 
 
-The results of MI scores slightly differ from the values obtained while using Python. It shows that duration in hours `dur_hour`, total number of stops `Total_Stops`, `Route3` and `Route2` variables are the most significant. It was expected that top features would be `Route3`, `Route2`, `Total_Stops` and `Route1`. Obtained MI scores also showed that `Vistara Premium Economy`, `Trujet`, `Multiple carriers`, are the least significant, however scoring above 0. It was expected that `Jet Airways Business` and `Trujet` would get MI score equal to 0, followed by `Vistara Premium Economy`, `Multiple carriers`, `GoAir` with the smallest scores. However, the differences do not change the overall assessment of features importance for further modelling. All features remain.
+The results of MI scores slightly differ from the values obtained while using Python. It shows that duration in hours `dur_hour`, total number of stops `Total_Stops`, `Route3` and `Route2` variables are the most significant. It was expected that top features would be `Route3`, `Route2`, `Total_Stops` and `Route1`. Obtained MI scores also showed that `Vistara Premium Economy`, `Trujet`, `Multiple carriers` are the least significant, however scoring above 0. It was expected that `Jet Airways Business` and `Trujet` would get MI score equal to 0, followed by `Vistara Premium Economy`, `Multiple carriers`, `GoAir` with the smallest scores. However, the differences do not change the overall assessment of features importance for further modelling. All features remain.
 
 
 ## Models
@@ -1146,7 +1146,7 @@ y_test <- y[-train_indices]
 </details>
 
 
-Further, two function for modeling were created based on the *caret* package. `train_predict` function fits the model to the training data within the selected method (LR, KNN, DT, GDB, etc.), make predictions on the test data and returns them.
+Further, two function for modeling were created based on the *caret* package. `train_predict` function fits the model to the training data within the selected method (LR, KNN, DT, GDB), make predictions on the test data and returns them.
 
 ```{r message=FALSE, warning=FALSE}
 train_predict <- function(method, X_train, y_train, X_test) {
