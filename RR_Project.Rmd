@@ -1405,3 +1405,88 @@ As an extension to the selected base models, this study propose another Machine 
 
 
 ## Hypertunning the model
+
+In the base study, the hypertunning was obtained using `RandomizedSearchCV` - a utility class in `scikit-learn` in Python. It performs random search hyperparameter tuning for machine learning models. It helps in finding the best combination of hyperparameters for a given model by randomly sampling from a defined parameter grid. In R, the `trainControl` object is created first to conduct cross-validation.
+
+Random search was implemented on Gradient Boosting Regressor model developed in previous subsection, as that was the best performing model out of the reproduced models. K-fold cross validation was set to `cv = 3`, which means that the model will be trained and evaluated using cross-validation with 3 folds, enabling a robust assessment of the model's performance and preventing overfitting.
+
+```{r message=FALSE, warning=FALSE}
+# Create a trainControl object for cross-validation
+ctrl <- trainControl(method = "cv", number = 3)
+```
+
+<details>
+  <summary>Python code</summary>
+  ```python
+  from sklearn.model_selection import RandomizedSearchCV
+  ```
+</details>
+
+Then, parameter grid is created. This grid specifies the values or ranges of values to explore for each hyperparameter of the Gradient Boosting Regressor.
+
+```{r message=FALSE, warning=FALSE}
+# Define the parameter grid for hypertuning
+param_grid <- expand.grid(
+  n.trees = c(100, 200, 300), #number of boosting iterations
+  interaction.depth = c(3, 5, 7), #maximum depth of an individual tree in the gradient boosting ensemble
+  shrinkage = c(0.1, 0.01, 0.001), #controls the learning rate of each tree in the ensemble 
+  n.minobsinnode = c(10, 20, 30) #sets the minimum number of samples required in a terminal node of a tree
+)
+```
+
+<details>
+  <summary>Python code</summary>
+  ```python
+  random_grid = {
+    'n_estimators' : [100, 120, 150, 180, 200,220],
+    'max_features':['auto','sqrt'],
+    'max_depth':[5,10,15,20],
+    }
+  ```
+</details>
+
+Further, the new model is trained using random search with `tuneGrid` defined before and `trControl` as train control object defined initially. The outcome is the set of the best parameters.
+
+```{r message=FALSE, warning=FALSE}
+# Create a Random Search using the train function from the caret package
+gbm_random <- train(
+  x = X_train,
+  y = y_train,
+  method = "gbm",
+  tuneGrid = param_grid,
+  trControl = ctrl
+)
+
+# Print the best parameters found by the random search
+print(gbm_random$bestTune)
+```
+
+
+Based on the best parameters, new predictions are made and new measurement metrics are calculated.
+
+```{r message=FALSE, warning=FALSE}
+# Use the best parameters to make predictions on the test set
+predictions <- predict(gbm_random, newdata = X_test)
+```
+
+```{r message=FALSE, warning=FALSE}
+calculate_metrics(predictions, y_test)
+```
+
+```{r message=FALSE, warning=FALSE}
+# Plot the distribution of residuals
+residuals<- y_test - predictions
+
+# Create a data frame with the residuals
+data <- data.frame(residuals = residuals)
+
+# Plot the histogram of residuals
+ggplot(data, aes(x = residuals, y = ..density..)) +
+  geom_histogram(fill = "lightblue", alpha = 0.7, color = "lightblue", bins = 100) +
+  geom_density(color = "darkblue", size = 0.5) +
+  labs(title = "Residuals Distribution Gradient Boosting after Hypertunning", x = "Price", y = "Density") +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "white"))
+```
+
+The results of the tuned model are visible from both, the metrics, as well as the plot of residuals distribution. After customizing the model with the set of the best parameters, the R2 value in creased from 75% to 82%, which implies better explainability of the adjusted model of analyzed data. Therefore, the predictions of flight prices are more accurate. The errors, i.e. MAE, MSE, RMSE decreased, which influenced better fir of the residuals on the plot compared to the basic GDB model. Summing up, the random search hypertunning was successfull as expected from the base study. The approach was correctly reproduced into another machine learning model.
