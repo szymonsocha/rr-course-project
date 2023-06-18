@@ -40,7 +40,7 @@ This is an RMarkdown presentation that serves as a final project for the course 
 The project's topic involves transcribing a ready-made [Python notebook](https://www.kaggle.com/code/anshigupta01/flight-price-prediction/notebook?fbclid=IwAR2vtpE8xwc7nhPqDwdEiwwImw62_XuIxTgEkG0Qo2OCCyHIONRIv7DD3pM), downloaded from the Kaggle platform, into R.\
 
 Additionally, the analysis will be expanded to include an additional machine learning model.\
-In order to make this project reproducible, we utilize the `dotenv` package to store the environment state.
+In order to make this project reproducible, we utilize the `renv` package to store the environment state.
 
 Please note that under each cell, there is a button available to expand the rewritten Python code.
 
@@ -62,9 +62,11 @@ One of the potential cause of subtle differences in results is the fact that Pyt
 ```{r}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 
-# To make our project reproducible, we use `renv` package
+# To make our project reproducible, we use `renv` package. By utilizing the following command, the appropriate versions of the libraries will be loaded
 renv::restore()
+```
 
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
 suppressPackageStartupMessages(library(tidyverse))
 library(readxl)
 library(dplyr)
