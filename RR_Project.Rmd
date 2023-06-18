@@ -57,16 +57,24 @@ Overall, the main goal of this project, therefore reproducing the aforementioned
 
 One of the potential cause of subtle differences in results is the fact that Python and R are different programming languages with their own syntax, libraries, and conventions. Translating code from one language to another can introduce some variances, especially when it comes to functions, data structures, and library-specific implementations. These differences could affect the overall behavior of the code. Other than that, different  libraries in Python and R have different default hyperparameters for machine learning models, leading to variations in the trained models and their predictions.
 
+## Load libraries
 
 ```{r}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+
+# To make our project reproducible, we use `renv` package
+renv::restore()
+
 suppressPackageStartupMessages(library(tidyverse))
 library(readxl)
 library(dplyr)
 library(ggplot2)
 library(DT)
 library(ggpubr)
-#library(caret)
+library(caret)
 #library(gridExtra)
+library(praznik)
+library(Metrics)
 ```
 <details>
   <summary>Python code</summary>
@@ -109,6 +117,8 @@ str(df)
   ```
 </details>
 
+The data structure is somewhat unusual. The departure time is given as a string (hour and minutes separated by a colon). The arrival time format is unstructured, and sometimes includes the date. The flight time contains mixed hours and minutes as a string.
+
 ```{r}
 summary(df)
 ```
@@ -129,6 +139,10 @@ dim(df)
   ```
 </details>
 
+Dataset consists of 11 columns and 10683 observations.
+
+We check missing data.
+
 ```{r}
 df %>% 
   summarise_all(~sum(is.na(.)))
@@ -139,6 +153,8 @@ df %>%
   df.isnull().sum()
   ```
 </details>
+
+Let's check the data missings on the bar chart. On the horizontal axis we show the name of the column, on the horizontal axis the number of data missings.
 
 ```{r}
 df %>% 
@@ -156,6 +172,8 @@ df %>%
   plt.show
   ```
 </details>
+
+We observe two missing data for the `Route` and `Total_Stops` variables.
 
 ```{r}
 df <- df %>% drop_na()
@@ -179,6 +197,8 @@ df %>% summarise_all(~sum(is.na(.)))
 
 ### Data Cleaning
 
+In the previous step, we explored the dataset by detecting two data missings and removing them. In this step, we clean the data, convert the column format and prepare the data for passing to the Machine Learning model.
+
 ```{r}
 glimpse(df)
 ```
@@ -189,15 +209,7 @@ glimpse(df)
   ```
 </details>
 
-```{r}
-names(df)
-```
-<details>
-  <summary>Python code</summary>
-  ```python
-  df.columns
-  ```
-</details>
+The format of the date column is a string. We are converting the date columns to date format.
 
 ```{r}
 df$Date_of_Journey <- as.POSIXct(df$Date_of_Journey, format="%d/%m/%Y")
@@ -225,6 +237,8 @@ glimpse(df)
   ```
 </details>
 
+From the `Date_of_Journey` column, we extract the day. From the `Date_of_Journey` column, we extract the month.
+
 ```{r}
 df$journey_day <- as.numeric(format(df$Date_of_Journey, "%d")) # extract day from Date_of_Journey `column`
 df$journey_month <- as.numeric(format(df$Date_of_Journey, "%m")) # extract month from Date_of_Journey `column`
@@ -247,6 +261,8 @@ head(df, 10)
   ```
 </details>
 
+We will no longer use the `Date_of_Journey` column, we are removing it.
+
 ```{r}
 df <- df %>% select(-Date_of_Journey) # remove Date_of_Journey column
 ```
@@ -256,6 +272,10 @@ df <- df %>% select(-Date_of_Journey) # remove Date_of_Journey column
   df.drop('Date_of_Journey', axis=1, inplace=True)
   ```
 </details>
+
+From the `Arrival_time` and `Dept_time` columns, we extract the hour and minutes. We then remove these columns.
+
+We create functions to convert problematic columns containing time data.
 
 ```{r}
 # extract hour and add a new column with the extracted hour values to the data frame
@@ -333,15 +353,9 @@ df <- drop_col(df, 'Arrival_Time')
   ```
 </details>
 
-```{r}
-head(df, 10)
-```
-<details>
-  <summary>Python code</summary>
-  ```python
-  df.head(10)
-  ```
-</details>
+Using regular expressions, we correct the `Duration` column.
+
+We separate the hours and minutes.
 
 ```{r}
 # create 'Duration' column, with values based on the existing 'Duration' column
@@ -368,16 +382,6 @@ df %>%
 </details>
 
 ```{r}
-head(df)
-```
-<details>
-  <summary>Python code</summary>
-  ```python
-  df.head()
-  ```
-</details>
-
-```{r}
 hour <- function(x){
   ifelse(grepl("h", x), as.numeric(strsplit(x, 'h')[[1]][1]), 0)
 }
@@ -397,22 +401,16 @@ minutes <- function(x){
   ```
 </details>
 
-```{r}
-df$dur_hour <- sapply(df$Duration, hour)
-```
-<details>
-  <summary>Python code</summary>
-  ```python
-  df['dur_hour']=df['Duration'].apply(hour)
-  ```
-</details>
+Using the sapply function together with the created function, we split the hours and minutes into two separate columns.
 
 ```{r}
+df$dur_hour <- sapply(df$Duration, hour)
 df$dur_min <- sapply(strsplit(df$Duration, ' '), minutes)
 ```
 <details>
   <summary>Python code</summary>
   ```python
+  df['dur_hour']=df['Duration'].apply(hour)
   df['dur_min']=df['Duration'].apply(minutes)
   ```
 </details>
@@ -448,6 +446,8 @@ str(df)
   ```
 </details>
 
+The dataframe already looks much better, let's still change the data type in the `dur_hour` and `dur_min` columns to integers.
+
 ```{r}
 df$dur_hour <- as.integer(df$dur_hour)
 df$dur_min <- as.integer(df$dur_min)
@@ -470,7 +470,11 @@ str(df)
   ```
 </details>
 
+For more detailed EDA, below we explore variables by categorical and numerical variables.
+
 #### Finding the categorical value
+
+We save the names of the columns with categorical data
 
 ```{r}
 column <- names(df)[sapply(df, is.character)]
@@ -486,6 +490,8 @@ column
 
 #### Finding the continuous value
 
+We save the names of the columns with numerical data
+
 ```{r}
 continuous_col <- names(df)[!sapply(df, is.character)]
 ```
@@ -498,6 +504,8 @@ continuous_col <- names(df)[!sapply(df, is.character)]
 </details>
 
 ## Handling categorical data
+
+For nominal data, which has no order, we use one hot encoding. For oridinal, sorted data we use lablel encoder
 
 ```{r}
 categorical <- df[column]
@@ -543,6 +551,8 @@ ggplot(data = df, aes(x = reorder(Airline, -Price), y = Price)) +
   sns.boxplot(x='Airline',y='Price',data=df.sort_values('Price',ascending=False))
   ```
 </details>
+
+Analyzing the chart, we see that Jet Airways Business has the highest price. The others have approximate median prices.
 
 ```{r}
 ggplot(data = df, aes(x = reorder(Total_Stops, -Price), y = Price)) +
@@ -1063,9 +1073,6 @@ Suggested approach for feature importance in the base study was Mutual Informati
 
 
 ```{r, message=FALSE, warning=FALSE}
-# Load library
-library(praznik)
-
 # Calculate Mutual Information of variables
 miScores_result <- miScores(X, y, threads = 0)
 miScores_result
@@ -1126,9 +1133,6 @@ Firstly, the dataset was split into train and test samples in proportion 80% - 2
 # Set random seed for reproducibility
 set.seed(123)
 
-# Load library
-library(caret)
-
 # Split the dataset into train and test samples
 train_indices <- createDataPartition(y, times = 1, p = 0.8, list = FALSE)
 X_train <- X[train_indices, ]
@@ -1166,9 +1170,6 @@ train_predict <- function(method, X_train, y_train, X_test) {
 
 
 ```{r message=FALSE, warning=FALSE}
-# Load library
-library(Metrics)
-
 calculate_metrics <- function(predictions, y_test) {
   
   r2score <- R2(predictions, y_test)
